@@ -1,123 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='50%' x='50%' font-size='48' text-anchor='middle' dominant-baseline='central'>🥂</text></svg>">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matt's Portfolio</title>
+<title>Your Name | Portfolio</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
---bl:#3b82f6;--bld:#1d4ed8;--blg:rgba(59,130,246,.35);
---bls:rgba(59,130,246,.12);--bg:#06080f;--s1:#0d1117;
---s2:#111827;--br:rgba(59,130,246,.18);
---tx:#e2e8f0;--mu:#64748b;--ac:#60a5fa
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
-html{scroll-behavior:smooth}
+
 body{
-font-family:'Sora',sans-serif;
-background:var(--bg);
-color:var(--tx);
-overflow-x:hidden;
-position:relative
+  font-family:'Sora',sans-serif;
+  background:#05070d;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* ⭐ STARFIELD CANVAS */
-#starCanvas{
-position:fixed;
-inset:0;
-z-index:0;
-pointer-events:none;
+/* SPACE BACKGROUND */
+#space{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
 }
 
-/* keep your site above stars */
-section, nav, footer, .vc, #modal {
-position:relative;
-z-index:1;
+/* GENERAL SECTION STYLING */
+section{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:4rem 2rem;
+  text-align:center;
 }
 
-/* ===== Keep ALL your existing styling below unchanged ===== */
+.container{
+  max-width:1000px;
+  margin:auto;
+}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,8,15,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--br);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem}
-.nav-logo{font-size:1rem;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#fff 40%,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1{
+  font-size:3.5rem;
+  font-weight:800;
+  background:linear-gradient(135deg,#ffffff,#9ca3af);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-/* --- I trimmed this preview for readability ---
-   KEEP the rest of your CSS EXACTLY how it was
-   Everything below this comment stays the same
-*/
+h2{
+  font-size:2.2rem;
+  margin-bottom:1.5rem;
+}
 
+p{
+  opacity:.75;
+  line-height:1.7;
+}
+
+.btn{
+  margin-top:2rem;
+  padding:12px 28px;
+  background:white;
+  color:black;
+  border:none;
+  border-radius:30px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s ease;
+}
+
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(255,255,255,0.2);
+}
+
+/* PROJECT CARDS */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:2rem;
+  margin-top:2rem;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  padding:2rem;
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+  transition:.3s ease;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  background:rgba(255,255,255,0.08);
+}
+
+.card h3{
+  margin-bottom:1rem;
+}
+
+footer{
+  position:relative;
+  z-index:1;
+  padding:2rem;
+  text-align:center;
+  opacity:.5;
+}
 </style>
 </head>
 
 <body>
 
-<!-- ⭐ STARFIELD -->
-<canvas id="starCanvas"></canvas>
+<canvas id="space"></canvas>
 
-<!-- ===== YOUR EXISTING SITE CONTENT (UNCHANGED) ===== -->
+<!-- HERO -->
+<section>
+  <div class="container">
+    <h1>Your Name</h1>
+    <p>Creative Developer • JavaScript Specialist • UI Designer</p>
+    <button class="btn">View My Work</button>
+  </div>
+</section>
 
-<nav>
-  <a href="#home" class="nav-logo">🥂 matt's portfolio</a>
-</nav>
+<!-- ABOUT -->
+<section>
+  <div class="container">
+    <h2>About Me</h2>
+    <p>
+      I build modern, interactive web experiences with a focus on performance,
+      smooth animations, and clean design. I specialize in JavaScript,
+      creative UI effects, and responsive layouts.
+    </p>
+  </div>
+</section>
 
-<!-- Keep ALL your sections exactly the same below this -->
+<!-- PROJECTS -->
+<section>
+  <div class="container">
+    <h2>Projects</h2>
+
+    <div class="projects-grid">
+      <div class="card">
+        <h3>Interactive Landing Page</h3>
+        <p>Animated hero section with particle background and smooth scroll effects.</p>
+      </div>
+
+      <div class="card">
+        <h3>Portfolio Website</h3>
+        <p>Minimalist portfolio with custom canvas animations and responsive layout.</p>
+      </div>
+
+      <div class="card">
+        <h3>Web App Dashboard</h3>
+        <p>Modern UI dashboard with real-time updates and clean component design.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section>
+  <div class="container">
+    <h2>Contact</h2>
+    <p>Email: your@email.com</p>
+    <p>GitHub: github.com/yourname</p>
+  </div>
+</section>
+
+<footer>
+  © 2026 Your Name — All Rights Reserved
+</footer>
 
 <script>
-
-/* ===== STARFIELD ENGINE ===== */
-
-const canvas = document.getElementById("starCanvas");
+const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
 let stars = [];
-const STAR_COUNT = 220;
+const STAR_COUNT = 200;
+let mouse = { x: null, y: null };
 
 function resize(){
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 window.addEventListener("resize", resize);
 resize();
 
-function createStars(){
-stars = [];
-for(let i=0;i<STAR_COUNT;i++){
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*1.8,
-speed:Math.random()*0.4+0.15
+window.addEventListener("mousemove", e=>{
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
 });
-}
+
+window.addEventListener("mouseleave", ()=>{
+  mouse.x = null;
+  mouse.y = null;
+});
+
+function createStars(){
+  stars = [];
+  for(let i=0;i<STAR_COUNT;i++){
+    stars.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      size: Math.random()*2 + 0.5,
+      vx: (Math.random()-0.5)*0.2,
+      vy: (Math.random()-0.5)*0.2,
+      alpha: Math.random()*0.8 + 0.2
+    });
+  }
 }
 createStars();
 
 function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="white";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-for(let s of stars){
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
+  stars.forEach(star=>{
+    star.x += star.vx;
+    star.y += star.vy;
 
-s.y += s.speed;
+    if(star.x < 0) star.x = canvas.width;
+    if(star.x > canvas.width) star.x = 0;
+    if(star.y < 0) star.y = canvas.height;
+    if(star.y > canvas.height) star.y = 0;
 
-if(s.y > canvas.height){
-s.y = 0;
-s.x = Math.random()*canvas.width;
+    if(mouse.x !== null){
+      let dx = star.x - mouse.x;
+      let dy = star.y - mouse.y;
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      let radius = 120;
+
+      if(dist < radius){
+        let force = (radius - dist) / radius;
+        star.x += dx * force * 0.03;
+        star.y += dy * force * 0.03;
+      }
+    }
+
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI*2);
+    ctx.fillStyle = "rgba(255,255,255,"+star.alpha+")";
+    ctx.shadowColor = "white";
+    ctx.shadowBlur = 8;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
 }
-}
 
-requestAnimationFrame(animate);
-}
 animate();
-
-/* ===== YOUR ORIGINAL JS BELOW (UNCHANGED) ===== */
-
 </script>
 
 </body>
