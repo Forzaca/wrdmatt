@@ -239,7 +239,7 @@ const DEFAULTS = {meta:{tabTitle:"Matt's Portfolio",name:"Matt",title:"Designer 
 let _data = null;
 
 async function loadRemoteData() {
-  if (JSONBIN_ID === 'PASTE_YOUR_BIN_ID_HERE') { _data = DEFAULTS; bootSite(); return; }
+  if (JSONBIN_ID === '699487a843b1c97be9862564') { _data = DEFAULTS; bootSite(); return; }
   try {
     const r = await fetch(JSONBIN_URL+'/latest', { 
       headers:{'X-Master-Key':JSONBIN_KEY},
@@ -309,7 +309,7 @@ async function bootSite(){
   if(!sessionStorage.getItem('mpv')){
     vc++;
     sessionStorage.setItem('mpv','1');
-    if(JSONBIN_ID!=='PASTE_YOUR_BIN_ID_HERE'){
+    if(JSONBIN_ID!=='699487a843b1c97be9862564'){
       try{
         const body=Object.assign({},_data,{viewCount:vc});
         await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(body)});
