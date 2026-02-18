@@ -97,17 +97,17 @@ textarea{resize:vertical;min-height:80px}
   <div class="adm-body">
     <div class="adm-sidebar">
       <div class="sec-label">Content</div>
-      <a onclick="showTab('identity')" class="active">👤 Identity</a>
-      <a onclick="showTab('music')">🎵 Music</a>
-      <a onclick="showTab('discord')">💬 Discord</a>
-      <a onclick="showTab('projects')">🖼 Projects</a>
-      <a onclick="showTab('reviews')">⭐ Reviews</a>
+      <a onclick="showTab('identity')" class="active"> Identity</a>
+      <a onclick="showTab('music')"> Music</a>
+      <a onclick="showTab('discord')"> Discord</a>
+      <a onclick="showTab('projects')"> Projects</a>
+      <a onclick="showTab('reviews')"> Reviews</a>
       <div class="sec-label">Commerce</div>
-      <a onclick="showTab('pricing')">💰 Pricing</a>
-      <a onclick="showTab('services')">🔧 Services</a>
+      <a onclick="showTab('pricing')"> Pricing</a>
+      <a onclick="showTab('services')"> Services</a>
       <div class="sec-label">Settings</div>
-      <a onclick="showTab('counter')">👁 View Counter</a>
-      <a onclick="showTab('password')">🔒 Password</a>
+      <a onclick="showTab('counter')"> View Counter</a>
+      <a onclick="showTab('password')"> Password</a>
     </div>
     <div class="adm-content">
 
@@ -235,18 +235,18 @@ let _data = JSON.parse(JSON.stringify(DEFAULTS));
 
 // Read from JSONbin
 async function loadRemote(){
-  if(JSONBIN_ID==='PASTE_YOUR_BIN_ID_HERE'){toast('⚠️ Add your JSONbin ID & Key to both files!',true);_data=JSON.parse(JSON.stringify(DEFAULTS));loadAll();return;}
+  if(JSONBIN_ID==='699487a843b1c97be9862564'){toast('Add your JSONbin ID & Key to both files!',true);_data=JSON.parse(JSON.stringify(DEFAULTS));loadAll();return;}
   try{
     showSaving('Loading from JSONbin…');
     const r=await fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_KEY,'X-Bin-Meta':'false'}});
     if(!r.ok)throw new Error('Fetch failed');
     _data=await r.json();
     hideSaving();
-    toast('✅ Loaded from JSONbin');
+    toast('Loaded from JSONbin');
     loadAll();
   }catch(e){
     hideSaving();
-    toast('❌ Could not reach JSONbin — check your ID & Key',true);
+    toast('Could not reach JSONbin — check your ID & Key',true);
     _data=JSON.parse(JSON.stringify(DEFAULTS));
     loadAll();
   }
@@ -255,13 +255,13 @@ async function loadRemote(){
 // Write full data object to JSONbin
 async function saveRemote(patch,successMsg){
   Object.assign(_data,patch);
-  if(JSONBIN_ID==='PASTE_YOUR_BIN_ID_HERE'){toast('⚠️ Add JSONbin credentials first!',true);return;}
+  if(JSONBIN_ID==='PASTE_YOUR_BIN_ID_HERE'){toast('Add JSONbin credentials first!',true);return;}
   showSaving('Saving…');
   try{
     const r=await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(_data)});
     if(!r.ok)throw new Error();
     hideSaving();
-    toast(successMsg||'✅ Saved — live for all visitors!');
+    toast(successMsg||'live for all visitors!');
   }catch{
     hideSaving();
     toast('❌ Save failed — check your JSONbin Key',true);
@@ -304,7 +304,7 @@ function renderProjects(){const l=document.getElementById('projectList');l.inner
 function addProject(){projs.push({url:'',name:'New Project'});renderProjects();}
 function rmProj(i){projs.splice(i,1);renderProjects();}
 function mvProj(i,dir){const t=projs[i];projs[i]=projs[i+dir];projs[i+dir]=t;renderProjects();}
-function saveProjects(){saveRemote({projects:projs},'✅ Projects saved — live now!');}
+function saveProjects(){saveRemote({projects:projs},'Projects saved');}
 
 // REVIEWS
 let revs=[];let nextRevId=100;
@@ -313,7 +313,7 @@ function renderReviews(){const l=document.getElementById('reviewList');l.innerHT
 function setStars(ri,val){revs[ri].stars=val;renderReviews();}
 function addReview(){revs.push({id:nextRevId++,name:'New Client',avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${nextRevId}`,stars:5,feedback:'Great work!',date:new Date().toISOString().split('T')[0],public:true});renderReviews();}
 function rmRev(i){revs.splice(i,1);renderReviews();}
-function saveReviews(){saveRemote({reviews:revs},'✅ Reviews saved — live now!');}
+function saveReviews(){saveRemote({reviews:revs},'Reviews saved');}
 
 // PLANS
 let plans=[];
@@ -321,7 +321,7 @@ function loadPlans(){plans=gd('plans');renderPlans();}
 function renderPlans(){const l=document.getElementById('planList');l.innerHTML='';plans.forEach((p,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${p.name||'Plan'}</div><div class="card-actions"><div class="toggle-wrap"><span style="font-size:.7rem;color:var(--mu)">Popular</span><label class="toggle"><input type="checkbox" ${p.popular?'checked':''} onchange="plans[${i}].popular=this.checked"><span class="toggle-slider"></span></label></div><button class="del-btn" onclick="rmPlan(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Plan Name</label><input type="text" value="${p.name||''}" oninput="plans[${i}].name=this.value"></div><div class="field-group"><label class="field-label">Price</label><input type="text" value="${p.price||''}" oninput="plans[${i}].price=this.value"></div></div><div class="grid2"><div class="field-group"><label class="field-label">Unit (e.g. robux)</label><input type="text" value="${p.unit||''}" oninput="plans[${i}].unit=this.value"></div><div class="field-group"><label class="field-label">Purchase URL</label><input type="url" value="${p.purchaseUrl||''}" placeholder="#" oninput="plans[${i}].purchaseUrl=this.value"></div></div><div class="field-group"><label class="field-label">Description</label><input type="text" value="${p.desc||''}" oninput="plans[${i}].desc=this.value"></div><div class="field-group"><label class="field-label">Features (one per line)</label><textarea oninput="plans[${i}].features=this.value.split('\\n').filter(f=>f.trim())">${(p.features||[]).join('\\n')}</textarea></div>`;l.appendChild(d);});}
 function addPlan(){plans.push({name:'New Plan',price:'0',unit:'robux',desc:'Plan description.',features:[],popular:false,purchaseUrl:'#'});renderPlans();}
 function rmPlan(i){plans.splice(i,1);renderPlans();}
-function savePlans(){saveRemote({plans:plans},'✅ Plans saved — live now!');}
+function savePlans(){saveRemote({plans:plans},'Plans saved');}
 
 // SERVICES
 let svcs=[];
@@ -329,7 +329,7 @@ function loadServices(){svcs=gd('services');renderServices();}
 function renderServices(){const l=document.getElementById('serviceList');l.innerHTML='';svcs.forEach((s,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${s.label||'Service'}</div><div class="card-actions"><button class="del-btn" onclick="rmSvc(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Service Label</label><input type="text" value="${s.label||''}" oninput="svcs[${i}].label=this.value"></div><div class="field-group"><label class="field-label">Price</label><input type="text" value="${s.price||''}" oninput="svcs[${i}].price=this.value"></div></div><div class="field-group"><label class="field-label">Unit (e.g. rbx)</label><input type="text" value="${s.unit||''}" oninput="svcs[${i}].unit=this.value"></div>`;l.appendChild(d);});}
 function addSvc(){svcs.push({label:'New Service',price:'100',unit:'rbx'});renderServices();}
 function rmSvc(i){svcs.splice(i,1);renderServices();}
-function saveServices(){saveRemote({services:svcs},'✅ Services saved — live now!');}
+function saveServices(){saveRemote({services:svcs},'Services saved');}
 
 // COUNTER
 function loadCounter(){const c=gd('viewCount')||0;document.getElementById('ctrDisplay').innerText=c.toLocaleString();document.getElementById('ctrInput').value=c;}
@@ -339,7 +339,7 @@ function resetCounter(){document.getElementById('ctrDisplay').innerText='0';docu
 // PASSWORD (stored locally in browser — intentional for security)
 function changePassword(){const cur=document.getElementById('pw-cur').value;const nw=document.getElementById('pw-new').value;const cfm=document.getElementById('pw-cfm').value;if(cur!==adminPw){toast('Current password incorrect',true);return;}if(!nw){toast('New password cannot be empty',true);return;}if(nw!==cfm){toast('Passwords do not match',true);return;}adminPw=nw;localStorage.setItem(PW_KEY,nw);document.getElementById('pw-cur').value='';document.getElementById('pw-new').value='';document.getElementById('pw-cfm').value='';toast('✅ Password changed!');}
 
-// FILE UPLOADS - convert to base64
+
 function uploadBanner(input){
   if(!input.files||!input.files[0])return;
   const file=input.files[0];
