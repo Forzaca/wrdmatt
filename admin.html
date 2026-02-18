@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – Matt's Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bl:#3b82f6;--bld:#1d4ed8;--blg:rgba(59,130,246,.35);--bls:rgba(59,130,246,.12);--bg:#06080f;--s1:#0d1117;--s2:#111827;--br:rgba(59,130,246,.18);--tx:#e2e8f0;--mu:#64748b;--ac:#60a5fa;--red:#ef4444;--green:#22c55e}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 50% 40% at 10% 10%,rgba(29,78,216,.15) 0%,transparent 70%)}
+#loginScreen{position:fixed;inset:0;z-index:999;background:rgba(6,8,15,.97);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center}
+.loginBox{background:var(--s1);border:1px solid var(--br);border-radius:20px;padding:2.5rem;width:360px;text-align:center;box-shadow:0 0 60px rgba(59,130,246,.1)}
+.loginBox h1{font-size:1.4rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,#fff,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.loginBox p{color:var(--mu);font-size:.8rem;margin-bottom:1.5rem}
+.loginBox input{width:100%;padding:.75rem 1rem;border-radius:10px;background:var(--s2);border:1px solid var(--br);color:var(--tx);font-size:.9rem;font-family:'Sora',sans-serif;margin-bottom:1rem;outline:none}
+.loginBox input:focus{border-color:var(--bl)}
+.loginBox button{width:100%;padding:.75rem;border-radius:10px;background:var(--bl);border:none;color:#fff;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Sora',sans-serif;transition:background .2s}
+.loginBox button:hover{background:var(--ac)}
+.loginErr{color:var(--red);font-size:.75rem;margin-top:.5rem;display:none}
+#adminApp{display:none}
+.adm-nav{position:sticky;top:0;z-index:50;background:rgba(6,8,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--br);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.adm-logo{font-size:.9rem;font-weight:700;background:linear-gradient(135deg,#fff,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.adm-actions{display:flex;gap:.75rem;align-items:center}
+.adm-preview{text-decoration:none;font-size:.75rem;color:var(--mu);padding:.4rem .9rem;border:1px solid var(--br);border-radius:8px;transition:all .2s}
+.adm-preview:hover{color:#fff;border-color:var(--bl)}
+.adm-logout{font-size:.75rem;color:var(--red);padding:.4rem .9rem;border:1px solid rgba(239,68,68,.3);border-radius:8px;cursor:pointer;background:none;font-family:'Sora',sans-serif;transition:all .2s}
+.adm-logout:hover{background:rgba(239,68,68,.1)}
+.adm-body{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 60px)}
+.adm-sidebar{background:var(--s1);border-right:1px solid var(--br);padding:1.5rem 0}
+.adm-sidebar a{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.5rem;font-size:.8rem;color:var(--mu);text-decoration:none;transition:all .2s;cursor:pointer;border-left:2px solid transparent}
+.adm-sidebar a:hover,.adm-sidebar a.active{color:#fff;background:var(--bls);border-left-color:var(--bl)}
+.adm-sidebar .sec-label{padding:.4rem 1.5rem;font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-top:.5rem}
+.adm-content{padding:2rem;max-width:900px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.panel-title{font-size:1.2rem;font-weight:700;margin-bottom:.25rem}
+.panel-sub{font-size:.78rem;color:var(--mu);margin-bottom:1.5rem}
+.field-group{margin-bottom:1.25rem}
+.field-label{font-size:.75rem;color:var(--mu);margin-bottom:.4rem;display:block;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+input[type=text],input[type=password],input[type=url],input[type=number],textarea,select{width:100%;padding:.65rem .9rem;border-radius:10px;background:var(--s2);border:1px solid var(--br);color:var(--tx);font-size:.85rem;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--bl)}
+textarea{resize:vertical;min-height:80px}
+.save-btn{padding:.65rem 1.4rem;border-radius:10px;background:var(--bl);border:none;color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;font-family:'Sora',sans-serif;transition:background .2s;box-shadow:0 0 15px var(--blg)}
+.save-btn:hover{background:var(--ac)}
+.danger-btn{padding:.65rem 1.4rem;border-radius:10px;background:transparent;border:1px solid rgba(239,68,68,.4);color:var(--red);font-weight:700;font-size:.82rem;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s}
+.danger-btn:hover{background:rgba(239,68,68,.1)}
+.small-btn{padding:.45rem 1rem;border-radius:8px;background:var(--bls);border:1px solid var(--br);color:var(--ac);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s}
+.small-btn:hover{background:rgba(59,130,246,.2);border-color:var(--bl)}
+.card{background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:1.25rem;margin-bottom:.75rem}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.card-title{font-size:.9rem;font-weight:600}
+.card-actions{display:flex;gap:.5rem}
+.del-btn{padding:.4rem .8rem;border-radius:7px;background:transparent;border:1px solid rgba(239,68,68,.3);color:var(--red);font-size:.72rem;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s}
+.del-btn:hover{background:rgba(239,68,68,.1)}
+.add-btn{display:flex;align-items:center;gap:.5rem;padding:.65rem 1.2rem;border-radius:10px;background:var(--s1);border:1px dashed var(--br);color:var(--mu);font-size:.8rem;cursor:pointer;font-family:'Sora',sans-serif;width:100%;justify-content:center;transition:all .2s;margin-top:.5rem}
+.add-btn:hover{border-color:var(--bl);color:var(--ac);background:var(--bls)}
+.toast{position:fixed;top:80px;right:1.5rem;z-index:9999;background:var(--green);color:#fff;padding:.75rem 1.25rem;border-radius:10px;font-size:.82rem;font-weight:600;opacity:0;transform:translateY(-10px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{background:var(--red)}
+.stars-input{display:flex;gap:.3rem}
+.star{font-size:1.4rem;cursor:pointer;color:#1e293b;transition:color .15s}
+.star.on{color:#fbbf24}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.counter-row{display:flex;align-items:center;gap:.75rem}
+.counter-num{font-size:2rem;font-weight:800;color:var(--ac);font-family:'JetBrains Mono',monospace}
+.toggle-wrap{display:flex;align-items:center;gap:.6rem}
+.toggle{position:relative;width:40px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#374151;border-radius:22px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;left:3px;bottom:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--bl)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+.sep{height:1px;background:var(--br);margin:1.5rem 0}
+  </style>
+</head>
+<body>
+<div id="loginScreen">
+  <div class="loginBox">
+    <div style="font-size:2.5rem;margin-bottom:.75rem">🥂</div>
+    <h1>Admin Panel</h1>
+    <p>Enter your admin password to continue</p>
+    <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Login</button>
+    <div class="loginErr" id="loginErr">Incorrect password</div>
+    <p style="margin-top:1rem;font-size:.65rem;color:var(--mu)">Default: admin123</p>
+  </div>
+</div>
+
+<div id="adminApp">
+  <nav class="adm-nav">
+    <div class="adm-logo">⚙ Admin Panel</div>
+    <div class="adm-actions">
+      <a href="index.html" class="adm-preview" target="_blank">↗ Preview Site</a>
+      <button class="adm-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  <div class="adm-body">
+    <div class="adm-sidebar">
+      <div class="sec-label">Content</div>
+      <a onclick="showTab('identity')" class="active">👤 Identity</a>
+      <a onclick="showTab('music')">🎵 Music</a>
+      <a onclick="showTab('discord')">💬 Discord</a>
+      <a onclick="showTab('projects')">🖼 Projects</a>
+      <a onclick="showTab('reviews')">⭐ Reviews</a>
+      <div class="sec-label">Commerce</div>
+      <a onclick="showTab('pricing')">💰 Pricing</a>
+      <a onclick="showTab('services')">🔧 Services</a>
+      <div class="sec-label">Settings</div>
+      <a onclick="showTab('counter')">👁 View Counter</a>
+      <a onclick="showTab('password')">🔒 Password</a>
+    </div>
+    <div class="adm-content">
+
+      <!-- IDENTITY -->
+      <div class="tab-panel active" id="tab-identity">
+        <div class="panel-title">Identity</div>
+        <div class="panel-sub">Edit your name, title, banner, profile picture, and contact.</div>
+        <div class="grid2">
+          <div class="field-group"><label class="field-label">Display Name</label><input type="text" id="id-name" placeholder="Matt"></div>
+          <div class="field-group"><label class="field-label">Title / Role</label><input type="text" id="id-title" placeholder="Designer | Developer"></div>
+        </div>
+        <div class="field-group"><label class="field-label">Tab Title</label><input type="text" id="id-tabtitle" placeholder="Matt's Portfolio"></div>
+        <div class="field-group">
+          <label class="field-label">Banner Image</label>
+          <input type="url" id="id-banner" placeholder="https://… or upload below">
+          <input type="file" id="id-banner-file" accept="image/*" onchange="uploadBanner(this)" style="margin-top:.5rem">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Profile Picture</label>
+          <input type="url" id="id-pfp" placeholder="https://… or upload below">
+          <input type="file" id="id-pfp-file" accept="image/*" onchange="uploadPfp(this)" style="margin-top:.5rem">
+        </div>
+        <div class="field-group"><label class="field-label">Contact Discord User ID</label><input type="text" id="id-discord" placeholder="123456789012345678"></div>
+        <button class="save-btn" onclick="saveIdentity()">Save Identity</button>
+      </div>
+
+      <!-- MUSIC -->
+      <div class="tab-panel" id="tab-music">
+        <div class="panel-title">Music Playlist</div>
+        <div class="panel-sub">Add songs that play on your portfolio. Audio files must be direct links to MP3/OGG files.</div>
+        <div id="musicList"></div>
+        <button class="add-btn" onclick="addSong()">+ Add Song</button>
+        <div style="margin-top:1rem"><button class="save-btn" onclick="savePlaylist()">Save Playlist</button></div>
+      </div>
+
+      <!-- DISCORD -->
+      <div class="tab-panel" id="tab-discord">
+        <div class="panel-title">Discord Server</div>
+        <div class="panel-sub">Configure your Discord server widget shown on the home page.</div>
+        <div class="field-group"><label class="field-label">Invite Code (without discord.gg/)</label><input type="text" id="dc-code" placeholder="ABC123"></div>
+        <div class="field-group"><label class="field-label">Server Name (fallback)</label><input type="text" id="dc-name" placeholder="Matt's Server"></div>
+        <div class="field-group"><label class="field-label">Server Icon URL (fallback)</label><input type="url" id="dc-icon" placeholder="https://…"></div>
+        <button class="save-btn" onclick="saveDiscord()">Save Discord Settings</button>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="tab-panel" id="tab-projects">
+        <div class="panel-title">Portfolio Projects</div>
+        <div class="panel-sub">Add, reorder, or remove your past work images. Use direct image URLs.</div>
+        <div id="projectList"></div>
+        <button class="add-btn" onclick="addProject()">+ Add Project</button>
+        <div style="margin-top:1rem"><button class="save-btn" onclick="saveProjects()">Save Projects</button></div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="tab-panel" id="tab-reviews">
+        <div class="panel-title">Client Reviews</div>
+        <div class="panel-sub">Manage reviews shown on your portfolio. Toggle visibility per review.</div>
+        <div id="reviewList"></div>
+        <button class="add-btn" onclick="addReview()">+ Add Review</button>
+        <div style="margin-top:1rem"><button class="save-btn" onclick="saveReviews()">Save Reviews</button></div>
+      </div>
+
+      <!-- PRICING PLANS -->
+      <div class="tab-panel" id="tab-pricing">
+        <div class="panel-title">Pricing Plans</div>
+        <div class="panel-sub">Edit your pricing tiers. Mark one as "Most Popular" to highlight it.</div>
+        <div id="planList"></div>
+        <button class="add-btn" onclick="addPlan()">+ Add Plan</button>
+        <div style="margin-top:1rem"><button class="save-btn" onclick="savePlans()">Save Plans</button></div>
+      </div>
+
+      <!-- INDIVIDUAL SERVICES -->
+      <div class="tab-panel" id="tab-services">
+        <div class="panel-title">Individual Services</div>
+        <div class="panel-sub">Set your a-la-carte service prices.</div>
+        <div id="serviceList"></div>
+        <button class="add-btn" onclick="addService()">+ Add Service</button>
+        <div style="margin-top:1rem"><button class="save-btn" onclick="saveServices()">Save Services</button></div>
+      </div>
+
+      <!-- VIEW COUNTER -->
+      <div class="tab-panel" id="tab-counter">
+        <div class="panel-title">View Counter</div>
+        <div class="panel-sub">Manage the public view counter shown on your portfolio.</div>
+        <div class="card">
+          <div style="margin-bottom:1rem;color:var(--mu);font-size:.8rem">Current Count</div>
+          <div class="counter-row">
+            <div class="counter-num" id="ctrDisplay">0</div>
+            <div style="flex:1"><input type="number" id="ctrInput" min="0" placeholder="Set count"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:.5rem">
+          <button class="save-btn" onclick="saveCounter()">Set Counter</button>
+          <button class="danger-btn" onclick="resetCounter()">Reset to 0</button>
+        </div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="tab-panel" id="tab-password">
+        <div class="panel-title">Change Password</div>
+        <div class="panel-sub">Update your admin panel login password.</div>
+        <div class="field-group"><label class="field-label">Current Password</label><input type="password" id="pw-cur" placeholder="Current password"></div>
+        <div class="field-group"><label class="field-label">New Password</label><input type="password" id="pw-new" placeholder="New password"></div>
+        <div class="field-group"><label class="field-label">Confirm New Password</label><input type="password" id="pw-cfm" placeholder="Confirm"></div>
+        <button class="save-btn" onclick="changePassword()">Update Password</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  JSONBIN CONFIG — must match index.html
+// ═══════════════════════════════════════
+const JSONBIN_ID  = 'PASTE_YOUR_BIN_ID_HERE';
+const JSONBIN_KEY = 'PASTE_YOUR_API_KEY_HERE';
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
+
+const DEFAULTS = {meta:{tabTitle:"Matt's Portfolio",name:"Matt",title:"Designer | Developer",contactDiscordId:"1272978844248178730",bannerUrl:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&q=80&fit=crop",pfpUrl:"https://api.dicebear.com/7.x/avataaars/svg?seed=Matt&backgroundColor=b6e3f4"},discord:{inviteCode:"",serverName:"Matt's Server",iconUrl:"https://cdn.discordapp.com/embed/avatars/1.png"},playlist:[{title:"Song Title 1",artist:"Artist 1",cover:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&q=80",url:""},{title:"Song Title 2",artist:"Artist 2",cover:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=200&q=80",url:""}],projects:[{url:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=80&fit=crop",name:"Project 1"},{url:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&fit=crop",name:"Project 2"},{url:"https://images.unsplash.com/photo-1636622433525-127afdf3662d?w=900&q=80&fit=crop",name:"Project 3"}],reviews:[{id:1,name:"Alex R.",avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=alex",stars:5,feedback:"Incredible work, delivered way beyond expectations.",date:"2025-12-10",public:true},{id:2,name:"Jordan K.",avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=jordan",stars:5,feedback:"Fast turnaround and stunning quality.",date:"2026-01-02",public:true},{id:3,name:"Sam T.",avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=sam",stars:4,feedback:"Great communication. Very professional.",date:"2026-01-20",public:true}],plans:[{name:"Basic",price:"500",unit:"robux",desc:"Best for simple projects.",features:["5 banners","1 footer","2 edits","1 generic banner"],popular:false,purchaseUrl:"#"},{name:"Premium",price:"3000",unit:"robux",desc:"For growing projects requiring more.",features:["25 banners","Department banners (x3)","2 generic banners","3 footers","5 edits","20 emojis"],popular:true,purchaseUrl:"#"},{name:"Essential",price:"1000",unit:"robux",desc:"Full scale for larger teams.",features:["15 banners","2 generic banners","2 footers","3 edits","10 emojis"],popular:false,purchaseUrl:"#"}],services:[{label:"Per Livery",price:"130",unit:"rbx"},{label:"Per Photo",price:"100",unit:"rbx"},{label:"Per Embed",price:"100",unit:"rbx"},{label:"Per Banner",price:"100",unit:"rbx"},{label:"Per Footer",price:"75",unit:"rbx"},{label:"Per Emoji",price:"50",unit:"rbx"}],viewCount:850};
+
+let _data = JSON.parse(JSON.stringify(DEFAULTS));
+
+// Read from JSONbin
+async function loadRemote(){
+  if(JSONBIN_ID==='PASTE_YOUR_BIN_ID_HERE'){toast('⚠️ Add your JSONbin ID & Key to both files!',true);_data=JSON.parse(JSON.stringify(DEFAULTS));loadAll();return;}
+  try{
+    showSaving('Loading from JSONbin…');
+    const r=await fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_KEY,'X-Bin-Meta':'false'}});
+    if(!r.ok)throw new Error('Fetch failed');
+    _data=await r.json();
+    hideSaving();
+    toast('✅ Loaded from JSONbin');
+    loadAll();
+  }catch(e){
+    hideSaving();
+    toast('❌ Could not reach JSONbin — check your ID & Key',true);
+    _data=JSON.parse(JSON.stringify(DEFAULTS));
+    loadAll();
+  }
+}
+
+// Write full data object to JSONbin
+async function saveRemote(patch,successMsg){
+  Object.assign(_data,patch);
+  if(JSONBIN_ID==='PASTE_YOUR_BIN_ID_HERE'){toast('⚠️ Add JSONbin credentials first!',true);return;}
+  showSaving('Saving…');
+  try{
+    const r=await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(_data)});
+    if(!r.ok)throw new Error();
+    hideSaving();
+    toast(successMsg||'✅ Saved — live for all visitors!');
+  }catch{
+    hideSaving();
+    toast('❌ Save failed — check your JSONbin Key',true);
+  }
+}
+
+function showSaving(msg){const t=document.getElementById('toast');t.innerText=msg;t.className='toast show';}
+function hideSaving(){document.getElementById('toast').classList.remove('show');}
+
+const gd = k => (_data&&_data[k]!==undefined)?_data[k]:DEFAULTS[k];
+const PW_KEY='mp_adminpw';
+let adminPw=localStorage.getItem(PW_KEY)||'admin123';
+function doLogin(){const v=document.getElementById('pwInput').value;if(v===adminPw){document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadRemote();}else{document.getElementById('loginErr').style.display='block';}}
+function logout(){document.getElementById('loginScreen').style.display='flex';document.getElementById('adminApp').style.display='none';document.getElementById('pwInput').value='';}
+function toast(msg,err=false){const t=document.getElementById('toast');t.innerText=msg;t.className='toast'+(err?' err':'');setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>t.classList.remove('show'),3000);}
+function showTab(id){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.adm-sidebar a').forEach(a=>a.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');event.currentTarget.classList.add('active');}
+function loadAll(){loadIdentity();loadMusic();loadDiscord();loadProjects();loadReviews();loadPlans();loadServices();loadCounter();}
+
+// IDENTITY
+function loadIdentity(){const m=gd('meta');document.getElementById('id-name').value=m.name||'';document.getElementById('id-title').value=m.title||'';document.getElementById('id-tabtitle').value=m.tabTitle||'';document.getElementById('id-banner').value=m.bannerUrl||'';document.getElementById('id-pfp').value=m.pfpUrl||'';document.getElementById('id-discord').value=m.contactDiscordId||'';}
+function saveIdentity(){const m=gd('meta');m.name=document.getElementById('id-name').value;m.title=document.getElementById('id-title').value;m.tabTitle=document.getElementById('id-tabtitle').value;m.bannerUrl=document.getElementById('id-banner').value;m.pfpUrl=document.getElementById('id-pfp').value;m.contactDiscordId=document.getElementById('id-discord').value;saveRemote({meta:m},'✅ Identity saved — live now!');}
+
+// MUSIC
+let songs=[];
+function loadMusic(){songs=gd('playlist');renderSongs();}
+function renderSongs(){const l=document.getElementById('musicList');l.innerHTML='';songs.forEach((s,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${s.title||'New Song'}</div><div class="card-actions"><button class="del-btn" onclick="rmSong(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Song Title</label><input type="text" value="${s.title||''}" oninput="songs[${i}].title=this.value;updateSongLabel(${i},this.value)"></div><div class="field-group"><label class="field-label">Artist</label><input type="text" value="${s.artist||''}" oninput="songs[${i}].artist=this.value"></div></div><div class="field-group"><label class="field-label">Audio URL (direct MP3/OGG link)</label><input type="url" value="${s.url||''}" placeholder="https://…/song.mp3" oninput="songs[${i}].url=this.value"></div><div class="field-group"><label class="field-label">Cover Art URL</label><input type="url" value="${s.cover||''}" placeholder="https://…/cover.jpg" oninput="songs[${i}].cover=this.value"></div>`;l.appendChild(d);});}
+function updateSongLabel(i,v){const cards=document.querySelectorAll('#musicList .card-title');if(cards[i])cards[i].innerText=v||'New Song';}
+function addSong(){songs.push({title:'New Song',artist:'Artist',cover:'',url:''});renderSongs();}
+function rmSong(i){songs.splice(i,1);renderSongs();}
+function savePlaylist(){saveRemote({playlist:songs},'✅ Playlist saved — live now!');}
+
+// DISCORD
+function loadDiscord(){const dc=gd('discord');document.getElementById('dc-code').value=dc.inviteCode||'';document.getElementById('dc-name').value=dc.serverName||'';document.getElementById('dc-icon').value=dc.iconUrl||'';}
+function saveDiscord(){saveRemote({discord:{inviteCode:document.getElementById('dc-code').value,serverName:document.getElementById('dc-name').value,iconUrl:document.getElementById('dc-icon').value}},'✅ Discord saved — live now!');}
+
+// PROJECTS
+let projs=[];
+function loadProjects(){projs=gd('projects');renderProjects();}
+function renderProjects(){const l=document.getElementById('projectList');l.innerHTML='';projs.forEach((p,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${p.name||'Project'}</div><div class="card-actions">${i>0?`<button class="small-btn" onclick="mvProj(${i},-1)">↑</button>`:''} ${i<projs.length-1?`<button class="small-btn" onclick="mvProj(${i},1)">↓</button>`:''} <button class="del-btn" onclick="rmProj(${i})">Remove</button></div></div><div class="field-group"><label class="field-label">Project Name</label><input type="text" value="${p.name||''}" oninput="projs[${i}].name=this.value"></div><div class="field-group"><label class="field-label">Image URL</label><input type="url" value="${p.url||''}" placeholder="https://… or upload below" oninput="projs[${i}].url=this.value"></div><div class="field-group"><input type="file" accept="image/*" onchange="uploadProjectImg(this,${i})" style="margin-top:.25rem"></div>`;l.appendChild(d);});}
+function addProject(){projs.push({url:'',name:'New Project'});renderProjects();}
+function rmProj(i){projs.splice(i,1);renderProjects();}
+function mvProj(i,dir){const t=projs[i];projs[i]=projs[i+dir];projs[i+dir]=t;renderProjects();}
+function saveProjects(){saveRemote({projects:projs},'✅ Projects saved — live now!');}
+
+// REVIEWS
+let revs=[];let nextRevId=100;
+function loadReviews(){revs=gd('reviews');renderReviews();}
+function renderReviews(){const l=document.getElementById('reviewList');l.innerHTML='';revs.forEach((r,i)=>{const d=document.createElement('div');d.className='card';let stars='';for(let s=1;s<=5;s++)stars+=`<span class="star${r.stars>=s?' on':''}" onclick="setStars(${i},${s})">★</span>`;d.innerHTML=`<div class="card-header"><div class="card-title">${r.name||'Client'}</div><div class="card-actions"><div class="toggle-wrap"><span style="font-size:.7rem;color:var(--mu)">Public</span><label class="toggle"><input type="checkbox" ${r.public?'checked':''} onchange="revs[${i}].public=this.checked"><span class="toggle-slider"></span></label></div><button class="del-btn" onclick="rmRev(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Client Name</label><input type="text" value="${r.name||''}" oninput="revs[${i}].name=this.value"></div><div class="field-group"><label class="field-label">Avatar URL</label><input type="url" value="${r.avatar||''}" placeholder="https://…" oninput="revs[${i}].avatar=this.value"></div></div><div class="field-group"><label class="field-label">Stars</label><div class="stars-input" id="stars-${i}">${stars}</div></div><div class="field-group"><label class="field-label">Feedback</label><textarea oninput="revs[${i}].feedback=this.value">${r.feedback||''}</textarea></div><div class="field-group"><label class="field-label">Date</label><input type="text" value="${r.date||''}" placeholder="2026-01-01" oninput="revs[${i}].date=this.value"></div>`;l.appendChild(d);});}
+function setStars(ri,val){revs[ri].stars=val;renderReviews();}
+function addReview(){revs.push({id:nextRevId++,name:'New Client',avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${nextRevId}`,stars:5,feedback:'Great work!',date:new Date().toISOString().split('T')[0],public:true});renderReviews();}
+function rmRev(i){revs.splice(i,1);renderReviews();}
+function saveReviews(){saveRemote({reviews:revs},'✅ Reviews saved — live now!');}
+
+// PLANS
+let plans=[];
+function loadPlans(){plans=gd('plans');renderPlans();}
+function renderPlans(){const l=document.getElementById('planList');l.innerHTML='';plans.forEach((p,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${p.name||'Plan'}</div><div class="card-actions"><div class="toggle-wrap"><span style="font-size:.7rem;color:var(--mu)">Popular</span><label class="toggle"><input type="checkbox" ${p.popular?'checked':''} onchange="plans[${i}].popular=this.checked"><span class="toggle-slider"></span></label></div><button class="del-btn" onclick="rmPlan(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Plan Name</label><input type="text" value="${p.name||''}" oninput="plans[${i}].name=this.value"></div><div class="field-group"><label class="field-label">Price</label><input type="text" value="${p.price||''}" oninput="plans[${i}].price=this.value"></div></div><div class="grid2"><div class="field-group"><label class="field-label">Unit (e.g. robux)</label><input type="text" value="${p.unit||''}" oninput="plans[${i}].unit=this.value"></div><div class="field-group"><label class="field-label">Purchase URL</label><input type="url" value="${p.purchaseUrl||''}" placeholder="#" oninput="plans[${i}].purchaseUrl=this.value"></div></div><div class="field-group"><label class="field-label">Description</label><input type="text" value="${p.desc||''}" oninput="plans[${i}].desc=this.value"></div><div class="field-group"><label class="field-label">Features (one per line)</label><textarea oninput="plans[${i}].features=this.value.split('\\n').filter(f=>f.trim())">${(p.features||[]).join('\\n')}</textarea></div>`;l.appendChild(d);});}
+function addPlan(){plans.push({name:'New Plan',price:'0',unit:'robux',desc:'Plan description.',features:[],popular:false,purchaseUrl:'#'});renderPlans();}
+function rmPlan(i){plans.splice(i,1);renderPlans();}
+function savePlans(){saveRemote({plans:plans},'✅ Plans saved — live now!');}
+
+// SERVICES
+let svcs=[];
+function loadServices(){svcs=gd('services');renderServices();}
+function renderServices(){const l=document.getElementById('serviceList');l.innerHTML='';svcs.forEach((s,i)=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="card-header"><div class="card-title">${s.label||'Service'}</div><div class="card-actions"><button class="del-btn" onclick="rmSvc(${i})">Remove</button></div></div><div class="grid2"><div class="field-group"><label class="field-label">Service Label</label><input type="text" value="${s.label||''}" oninput="svcs[${i}].label=this.value"></div><div class="field-group"><label class="field-label">Price</label><input type="text" value="${s.price||''}" oninput="svcs[${i}].price=this.value"></div></div><div class="field-group"><label class="field-label">Unit (e.g. rbx)</label><input type="text" value="${s.unit||''}" oninput="svcs[${i}].unit=this.value"></div>`;l.appendChild(d);});}
+function addSvc(){svcs.push({label:'New Service',price:'100',unit:'rbx'});renderServices();}
+function rmSvc(i){svcs.splice(i,1);renderServices();}
+function saveServices(){saveRemote({services:svcs},'✅ Services saved — live now!');}
+
+// COUNTER
+function loadCounter(){const c=gd('viewCount')||0;document.getElementById('ctrDisplay').innerText=c.toLocaleString();document.getElementById('ctrInput').value=c;}
+function saveCounter(){const v=parseInt(document.getElementById('ctrInput').value)||0;document.getElementById('ctrDisplay').innerText=v.toLocaleString();saveRemote({viewCount:v},'✅ Counter updated — live now!');}
+function resetCounter(){document.getElementById('ctrDisplay').innerText='0';document.getElementById('ctrInput').value='0';saveRemote({viewCount:0},'Counter reset!');}
+
+// PASSWORD (stored locally in browser — intentional for security)
+function changePassword(){const cur=document.getElementById('pw-cur').value;const nw=document.getElementById('pw-new').value;const cfm=document.getElementById('pw-cfm').value;if(cur!==adminPw){toast('Current password incorrect',true);return;}if(!nw){toast('New password cannot be empty',true);return;}if(nw!==cfm){toast('Passwords do not match',true);return;}adminPw=nw;localStorage.setItem(PW_KEY,nw);document.getElementById('pw-cur').value='';document.getElementById('pw-new').value='';document.getElementById('pw-cfm').value='';toast('✅ Password changed!');}
+
+// FILE UPLOADS - convert to base64
+function uploadBanner(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  if(file.size>5000000){toast('File too large (max 5MB)',true);return;}
+  const reader=new FileReader();
+  reader.onload=e=>{document.getElementById('id-banner').value=e.target.result;toast('Banner uploaded — click Save Identity');};
+  reader.readAsDataURL(file);
+}
+function uploadPfp(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  if(file.size>3000000){toast('File too large (max 3MB)',true);return;}
+  const reader=new FileReader();
+  reader.onload=e=>{document.getElementById('id-pfp').value=e.target.result;toast('Profile pic uploaded — click Save Identity');};
+  reader.readAsDataURL(file);
+}
+function uploadProjectImg(input,idx){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  if(file.size>5000000){toast('File too large (max 5MB)',true);return;}
+  const reader=new FileReader();
+  reader.onload=e=>{projs[idx].url=e.target.result;renderProjects();toast('Image uploaded — click Save Projects');};
+  reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
