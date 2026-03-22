@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>m</title>
+    <link rel="icon" href="images/tabicon.png">
+    <meta property="og:title" content="matt.himself">
+    <meta property="og:description" content="view matt's portfolio, browse my work, order, view my availability">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <style>
+        :root {
+            --accent: #3b82f6;
+            --accent-light: #60a5fa;
+            --glass: rgba(59, 130, 246, 0.03);
+            --border: rgba(59, 130, 246, 0.15);
+            --blue-glow: rgba(59, 130, 246, 0.1);
+            --online: #50fa7b;
+            --idle: #f1fa8c;
+            --dnd: #ff5555;
+            --offline: #6272a4;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            cursor: none !important;
+        }
+
+        body {
+            background: #060810;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* ── ENTER SCREEN ── */
+        #enter-screen {
+            position: fixed; inset: 0;
+            background: #060810;
+            z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .enter-content { text-align: center; animation: pulse-glow 2.5s infinite ease-in-out; }
+        .enter-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 6px; color: #fff; text-transform: uppercase; text-shadow: 0 0 15px var(--accent); }
+        @keyframes pulse-glow { 0%,100% { opacity:.5; transform:scale(.98); } 50% { opacity:1; transform:scale(1); } }
+
+        /* ── MAIN ── */
+        #main-content {
+            opacity: 0; transition: opacity 1.5s ease;
+            width: 100%; display: flex; flex-direction: column; align-items: center;
+            pointer-events: none;
+        }
+        #main-content.visible { opacity: 1; pointer-events: auto; }
+
+        /* ── CURSOR ── */
+        #cursor {
+            width: 20px; height: 20px;
+            background: rgba(59,130,246,0.4); border: 1px solid var(--accent);
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 20000;
+            transform: translate(-50%,-50%); transition: width .2s, height .2s;
+        }
+
+        /* ── SNOW ── */
+        #snow { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+
+        /* ── DISCORD TOP CARD ── */
+        .discord-widget-container { width: 100%; max-width: 1100px; margin-bottom: 20px; z-index: 10; }
+        .discord-card {
+            background: rgba(59,130,246,0.05); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 24px; padding: 25px;
+            transition: .4s cubic-bezier(.175,.885,.32,1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 0 20px var(--blue-glow);
+            display: flex; align-items: center; gap: 20px;
+        }
+        .discord-card:hover { border-color: var(--accent); background: rgba(59,130,246,.08); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,.1); }
+        .discord-pfp-wrapper { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+        .discord-pfp { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--border); object-fit: cover; }
+        .discord-status-dot { position: absolute; bottom: 2px; right: 2px; width: 20px; height: 20px; border-radius: 50%; border: 4px solid #060810; background: var(--offline); }
+        .discord-info h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+        .discord-activity { font-size: .85rem; color: #aaa; line-height: 1.4; display: flex; align-items: center; }
+
+        /* ── BENTO GRID ── */
+        .bento-grid {
+            position: relative; z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px; max-width: 1100px; width: 100%;
+        }
+
+        .card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 24px; padding: 30px;
+            display: flex; flex-direction: column;
+            transition: .4s cubic-bezier(.175,.885,.32,1.275);
+            box-shadow: inset 0 0 15px rgba(59,130,246,.02);
+        }
+        .card:hover {
+            border-color: var(--accent); background: rgba(59,130,246,.08);
+            transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,.1);
+        }
+
+        .c-profile    { grid-column: span 2; }
+        .c-stack      { grid-column: span 2; overflow: hidden; padding: 30px 0; }
+        .c-links      { grid-column: span 1; }
+        .c-status     { grid-column: span 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .c-projects   { grid-column: span 2; }
+        .c-philosophy { grid-column: span 2; }
+        .c-portfolio  { grid-column: span 2; cursor: pointer !important; }
+
+        h1 {
+            font-size: 2.5rem; font-weight: 800; letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .tagline { color: var(--accent); text-transform: uppercase; font-size: .7rem; letter-spacing: 3px; font-weight: 700; margin-bottom: 10px; }
+        .bio { font-size: .95rem; line-height: 1.6; color: #aaa; margin-top: 15px; }
+
+        /* ── MARQUEE / STACK ── */
+        .stack-label { color: var(--accent); text-transform: uppercase; font-size: .7rem; letter-spacing: 3px; font-weight: 700; padding: 0 30px; margin-bottom: 18px; }
+        .marquee-outer { width: 100%; overflow: hidden; position: relative; }
+        .marquee-outer::before,
+        .marquee-outer::after {
+            content: '';
+            position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+        }
+        .marquee-outer::before { left: 0; background: linear-gradient(to right, #060810, transparent); }
+        .marquee-outer::after  { right: 0; background: linear-gradient(to left, #060810, transparent); }
+        .marquee-track {
+            display: flex; gap: 10px;
+            animation: marquee-scroll 22s linear infinite;
+            width: max-content;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+        .marquee-track2 {
+            display: flex; gap: 10px;
+            animation: marquee-scroll2 28s linear infinite;
+            width: max-content;
+            margin-top: 10px;
+        }
+        .marquee-track2:hover { animation-play-state: paused; }
+        @keyframes marquee-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-scroll2 {
+            0%   { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        .tech-pill {
+            display: inline-flex; align-items: center; padding: 7px 14px;
+            background: rgba(255,255,255,.05); border: 1px solid var(--border);
+            border-radius: 10px; font-size: .75rem; color: #efefef;
+            white-space: nowrap; flex-shrink: 0; transition: .3s;
+        }
+        .tech-pill:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(59,130,246,.12); }
+
+        /* ── LINKS ── */
+        .link-item {
+            display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; color: #fff; padding: 12px; border-radius: 12px;
+            background: rgba(255,255,255,.03); margin-bottom: 10px; font-size: .85rem; transition: .3s;
+        }
+        .link-item:hover { background: var(--accent); color: #fff; }
+
+        /* ── STATUS ── */
+        .status-container {
+            display: flex; align-items: center; justify-content: center;
+            padding: 15px; background: rgba(80,250,123,.05);
+            border: 1px solid rgba(80,250,123,.2); border-radius: 15px;
+            margin-top: auto; animation: status-pulse 2s infinite;
+        }
+        @keyframes status-pulse { 0% { box-shadow:0 0 0 0 rgba(80,250,123,.2); } 70% { box-shadow:0 0 0 10px rgba(80,250,123,0); } 100% { box-shadow:0 0 0 0 rgba(80,250,123,0); } }
+        .status-dot { width:8px; height:8px; background:#50fa7b; border-radius:50%; display:inline-block; margin-right:10px; box-shadow:0 0 10px #50fa7b; }
+        .status-text { font-size:.75rem; font-weight:700; letter-spacing:1px; color:#50fa7b; text-transform:uppercase; }
+
+        /* ── MUSIC PLAYER (fixed bottom-right) ── */
+        #music-widget {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            z-index: 900;
+            width: 300px;
+            background: rgba(6,8,16,0.92);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 14px 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.6), inset 0 0 20px var(--blue-glow);
+            transition: opacity 1.5s ease;
+            opacity: 0;
+        }
+        #music-widget.vis { opacity: 1; }
+        .m-wrap { display:flex; align-items:center; gap:10px; }
+        .m-art-img { width:42px; height:42px; border-radius:8px; border:1px solid var(--border); object-fit:cover; flex-shrink:0; background:rgba(59,130,246,.1); }
+        .m-info { flex:1; min-width:0; }
+        .m-lbl { font-size:.55rem; font-weight:800; letter-spacing:2px; color:#444; text-transform:uppercase; }
+        .m-ttl { font-size:.78rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+        .m-artist-lbl { font-size:.68rem; color:#666; margin-top:1px; }
+        .m-bar { width:100%; height:3px; background:rgba(255,255,255,.1); border-radius:3px; margin-top:6px; cursor:pointer; overflow:hidden; }
+        .m-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),#06b6d4); width:0%; transition:width .1s linear; border-radius:3px; }
+        .m-controls { display:flex; align-items:center; gap:6px; margin-top:10px; }
+        .mc-btn { width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#06b6d4); border:none; color:#fff; font-size:.65rem; display:flex; align-items:center; justify-content:center; cursor:pointer !important; transition:.3s; box-shadow:0 0 12px rgba(59,130,246,.4); flex-shrink:0; }
+        .mc-btn:hover { transform:scale(1.12); box-shadow:0 0 20px rgba(59,130,246,.7); }
+        .vol-row { flex:1; display:flex; align-items:center; }
+        .vol-bar { flex:1; height:3px; background:rgba(255,255,255,.1); border-radius:3px; cursor:pointer; overflow:hidden; }
+        .vol-fill { height:100%; background:linear-gradient(90deg,var(--accent),#06b6d4); border-radius:3px; width:65%; }
+        .mc-time { font-size:.6rem; color:#444; white-space:nowrap; }
+
+        /* ── VOLUME BOTTOM ── */
+        .volume-container { width:100%; max-width:1100px; margin-top:30px; padding:20px; display:flex; flex-direction:column; align-items:center; gap:15px; z-index:10; }
+        .volume-slider { -webkit-appearance:none; width:250px; height:3px; background:rgba(59,130,246,.15); border-radius:5px; outline:none; }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; background:var(--accent); border-radius:50%; cursor:none; box-shadow:0 0 15px var(--accent); border:2px solid #060810; }
+        .volume-label { font-size:.65rem; text-transform:uppercase; letter-spacing:4px; color:var(--accent); font-weight:800; opacity:.8; }
+
+        /* ── PORTFOLIO OVERLAY ── */
+        #portfolio-overlay { position:fixed; inset:0; background:#060810; z-index:10000; display:none; opacity:0; overflow-y:auto; padding:60px 20px; transition:opacity .8s ease; }
+        .portfolio-content { max-width:1200px; margin:0 auto; }
+        .portfolio-section { margin-bottom:80px; opacity:0; transform:translateY(30px); transition:1s ease; }
+        .portfolio-section.visible { opacity:1; transform:translateY(0); }
+        .section-title { font-size:1.5rem; color:var(--accent); margin-bottom:30px; border-left:4px solid var(--accent); padding-left:15px; text-transform:uppercase; letter-spacing:2px; }
+        .image-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+        .portfolio-img { width:100%; border-radius:15px; border:1px solid var(--border); transition:.4s cubic-bezier(.175,.885,.32,1.275); cursor:pointer !important; object-fit:cover; aspect-ratio:16/9; background:#0a0e1a; display:block; }
+        .portfolio-img:hover { border-color:var(--accent); transform:scale(1.02); box-shadow:0 0 30px rgba(59,130,246,.2); }
+        .close-portfolio { position:fixed; top:30px; right:30px; background:var(--accent); color:#fff; border:none; padding:10px 20px; border-radius:50px; font-weight:800; z-index:10001; cursor:pointer !important; font-size:.8rem; letter-spacing:2px; transition:.3s; }
+        .close-portfolio:hover { background:#60a5fa; transform:scale(1.05); }
+
+        /* ── LIGHTBOX ── */
+        #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:30000; display:none; justify-content:center; align-items:center; opacity:0; transition:opacity .5s ease; backdrop-filter:blur(10px); }
+        #lightbox img { max-width:90%; max-height:85%; border-radius:10px; box-shadow:0 0 50px rgba(59,130,246,.3); transform:scale(.8); transition:transform .5s cubic-bezier(.175,.885,.32,1.275); cursor:pointer !important; }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width:7px; }
+        ::-webkit-scrollbar-track { background:#060810; }
+        ::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--accent),#6366f1); border-radius:4px; }
+
+        @media (max-width:900px) {
+            .bento-grid { grid-template-columns:1fr; }
+            .card { grid-column:span 1 !important; }
+            body { overflow-y:auto; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<div id="enter-screen" onclick="startApp()">
+    <div class="enter-content">
+        <div class="enter-text">Click to enter</div>
+    </div>
+</div>
+
+<div id="cursor"></div>
+<canvas id="snow"></canvas>
+
+<div id="main-content">
+
+    <!-- DISCORD LIVE CARD -->
+    <div class="discord-widget-container">
+        <div class="discord-card" data-tilt>
+            <div class="discord-pfp-wrapper">
+                <img id="dc-pfp" src="images/Profile-Photo.png" class="discord-pfp" alt="pfp">
+                <div id="dc-dot" class="discord-status-dot"></div>
+            </div>
+            <div class="discord-info">
+                <div class="tagline" id="dc-tag">Live Status</div>
+                <h2 id="dc-name">Matt.Himself</h2>
+                <p id="dc-act" class="discord-activity">Connecting to Discord...</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="bento-grid">
+
+        <!-- PROFILE -->
+        <div class="card c-profile" data-tilt>
+            <div class="tagline" id="el-tagline">Designer &amp; Developer</div>
+            <h1 id="el-name">Matt.Himself</h1>
+            <p class="bio" id="el-bio"></p>
+        </div>
+
+        <!-- STACK — marquee rows -->
+        <div class="card c-stack" data-tilt>
+            <div class="stack-label">Softwares Used</div>
+            <div class="marquee-outer">
+                <div class="marquee-track" id="marquee-row1"></div>
+            </div>
+            <div class="marquee-outer" style="margin-top:10px;">
+                <div class="marquee-track2" id="marquee-row2"></div>
+            </div>
+        </div>
+
+        <!-- LINKS -->
+        <div class="card c-links" data-tilt>
+            <div class="tagline">Connect</div>
+            <div id="links-wrap" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="card c-status" data-tilt>
+            <div class="tagline">Work Status</div>
+            <div id="status-box" class="status-container">
+                <span class="status-dot"></span>
+                <span class="status-text" id="status-txt">Available for projects</span>
+            </div>
+        </div>
+
+        <!-- RECENT PROJECTS -->
+        <div class="card c-projects" data-tilt>
+            <div class="tagline">Recent Projects</div>
+            <h2 id="el-stat" style="margin-top:10px;font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"></h2>
+            <p class="bio" style="font-size:.83rem;" id="el-proj-desc"></p>
+        </div>
+
+        <!-- PHILOSOPHY -->
+        <div class="card c-philosophy" data-tilt>
+            <div class="tagline">Mindset</div>
+            <p class="bio" style="font-size:.83rem;color:var(--accent-light);" id="el-quote"></p>
+        </div>
+
+        <!-- PORTFOLIO BUTTON -->
+        <div class="card c-portfolio" data-tilt onclick="openPortfolio()">
+            <div class="tagline">Works</div>
+            <h2 style="font-size:1.8rem;font-weight:800;color:#fff;">PORTFOLIO</h2>
+            <p class="bio" style="font-size:.85rem;" id="el-port-desc"></p>
+        </div>
+
+    </main>
+
+    <!-- VOLUME BOTTOM (same as Dubai) -->
+    <div class="volume-container">
+        <span class="volume-label">Configure Volume</span>
+        <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.65">
+    </div>
+
+</div><!-- /main-content -->
+
+<!-- MUSIC WIDGET — fixed bottom right -->
+<div id="music-widget">
+    <div class="m-wrap">
+        <img id="m-art" class="m-art-img" src="" alt="cover">
+        <div class="m-info">
+            <div class="m-lbl">Now Playing</div>
+            <div class="m-ttl" id="m-title">Loading…</div>
+            <div class="m-artist-lbl" id="m-artist">…</div>
+            <div class="m-bar" id="m-bar"><div class="m-bar-fill" id="m-fill"></div></div>
+        </div>
+    </div>
+    <div class="m-controls">
+        <button class="mc-btn" onclick="prevSong();event.stopPropagation()">⏮</button>
+        <button class="mc-btn" id="m-pbtn" onclick="togglePlay();event.stopPropagation()">▶</button>
+        <button class="mc-btn" onclick="nextSong();event.stopPropagation()">⏭</button>
+        <div class="vol-row">
+            <div class="vol-bar" id="v-bar"><div class="vol-fill" id="v-fill"></div></div>
+        </div>
+        <span class="mc-time" id="m-time">0:00</span>
+    </div>
+    <audio id="m-audio" preload="none"></audio>
+</div>
+
+<!-- PORTFOLIO OVERLAY -->
+<div id="portfolio-overlay">
+    <button class="close-portfolio" onclick="closePortfolio()">BACK</button>
+    <div class="portfolio-content" id="port-container"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+    <img id="lb-img" src="" alt="">
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ★  ALL EDITABLE DATA — change anything here freely
+═══════════════════════════════════════════════════ -->
+<script>
+const CONFIG = {
+
+    /* ── PROFILE ─────────────────────────────────── */
+    name:    "Matt.Himself",
+    tagline: "Designer & Developer",
+    bio:     "Designer, developer, and creator crafting polished digital experiences. From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.",
+    quote:   '"Design is how it looks. Code is how it works. The real magic is knowing both."',
+
+    /* ── DISCORD ─────────────────────────────────── */
+    discord: {
+        userId:       "1272978844248178730",   // Lanyard user ID for live presence
+        serverInvite: "bigsky",               // discord.gg/XXXX — used for member count
+    },
+
+    /* ── COMMISSION STATUS ───────────────────────── */
+    commissionsOpen: true,   // true = green "Available",  false = red "Closed"
+
+    /* ── SKILLS — split into two rows for the marquee ── */
+    skillsRow1: [
+        "Photoshop", "Illustrator", "After Effects", "Premiere Pro",
+        "Figma", "Canva", "Blender", "VS Code",
+    ],
+    skillsRow2: [
+        "HTML5", "CSS3", "JavaScript", "Node.js",
+        "Python", "Discord.js", "Git", "Vercel",
+    ],
+
+    /* ── LINKS ───────────────────────────────────── */
+    links: [
+        { label: "Commissions", url: "https://discord.gg/bigsky" },
+        { label: "Discord",     url: "https://discord.com/users/1272978844248178730" },
+    ],
+
+    /* ── PROJECTS STAT ───────────────────────────── */
+    projectsStat: "200+",
+    projectsDesc: "Projects Delivered — From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.",
+
+    /* ── PORTFOLIO BUTTON SUB TEXT ───────────────── */
+    portfolioDesc: "View all of Matt's work across design, development, and more.",
+
+    /* ── MUSIC PLAYLIST ──────────────────────────── */
+    playlist: [
+        {
+            title:  "Telekinesis",
+            artist: "Travis Scott",
+            cover:  "https://cdn.discordapp.com/attachments/1464832198418104543/1473843662306938980/OIP.png",
+            url:    "https://dubais.studio/assets/telekinesis.mp3"
+        },
+        {
+            title:  "HOLY MATRIMONY",
+            artist: "DC THE DON",
+            cover:  "https://cdn.discordapp.com/attachments/1464832198418104543/1473846378198208584/b3e9c4907d3f9f82de4431a7c3d7e71a.999x999x1.png",
+            url:    "https://dubais.studio/assets/holymatrimony.mp3"
+        },
+    ],
+
+    /*
+     * ── PORTFOLIO ─────────────────────────────────
+     * Each key = a section title shown in the overlay.
+     * Values = arrays of image file paths (relative to index.html).
+     *
+     * IMAGE FILE ROOTS:
+     *   Tab icon  → images/tabicon.png
+     *   Projects  → images/project 1.png  through  images/project 10.png
+     *   (add more paths as needed)
+     */
+    portfolio: {
+        "Featured Work": [
+            "images/project 1.png",
+            "images/project 2.png",
+            "images/project 3.png",
+            "images/project 4.png",
+            "images/project 5.png",
+            "images/project 6.png",
+            "images/project 7.png",
+            "images/project 8.png",
+            "images/project 9.png",
+            "images/project 10.png",
+        ],
+    },
+
+};
+/* ═══════════════ END OF EDITABLE DATA ═══════════════ */
+
+
+/* ── TITLE ANIMATION ── */
+const _t = CONFIG.name + " ✦", _chars = Array.from(_t);
+let _ti = 0, _ta = true;
+setInterval(()=>{
+    _ta ? _ti++ : _ti--;
+    if(_ti >= _chars.length) _ta = false;
+    if(_ti <= 1)             _ta = true;
+    document.title = _chars.slice(0,_ti).join('') || "m";
+}, 120);
+
+/* ── SNOW / PARTICLES ── */
+(()=>{
+    const c = document.getElementById('snow'), ctx = c.getContext('2d');
+    let fl = [];
+    function init(){ c.width=innerWidth; c.height=innerHeight; fl=Array.from({length:80},()=>({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*2+.8,v:Math.random()*.8+.4})); }
+    function draw(){ ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle="rgba(96,165,250,0.22)"; fl.forEach(f=>{ ctx.beginPath(); ctx.arc(f.x,f.y,f.s,0,Math.PI*2); ctx.fill(); f.y+=f.v; if(f.y>c.height){f.y=-5;f.x=Math.random()*c.width;} }); requestAnimationFrame(draw); }
+    window.addEventListener('resize', init); init(); draw();
+})();
+
+/* ── CURSOR ── */
+const cr = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cr.style.left=e.clientX+'px'; cr.style.top=e.clientY+'px'; });
+document.addEventListener('mousedown', () => cr.style.transform='translate(-50%,-50%) scale(.78)');
+document.addEventListener('mouseup',   () => cr.style.transform='translate(-50%,-50%) scale(1)');
+
+/* ── ENTER ── */
+function startApp(){
+    const es = document.getElementById('enter-screen');
+    es.style.opacity = '0';
+    setTimeout(()=>{ es.style.display='none'; document.getElementById('main-content').classList.add('visible'); }, 1000);
+    setTimeout(()=>{ document.getElementById('music-widget').classList.add('vis'); }, 1200);
+    setTimeout(()=>{ if(!mPlaying && CONFIG.playlist[mCI]?.url) autoPlay(); }, 900);
+}
+
+/* ── LANYARD ── */
+async function fetchLanyard(){
+    try{
+        const uid = CONFIG.discord.userId;
+        const dat = (await (await fetch(`https://api.lanyard.rest/v1/users/${uid}`)).json());
+        if(!dat.success) return;
+        const d = dat.data;
+        if(d.discord_user.avatar) document.getElementById('dc-pfp').src=`https://cdn.discordapp.com/avatars/${uid}/${d.discord_user.avatar}.webp?size=160`;
+        document.getElementById('dc-name').innerText = d.discord_user.global_name||d.discord_user.username;
+        const dot=document.getElementById('dc-dot');
+        const clr={online:'#50fa7b',idle:'#f1fa8c',dnd:'#ff5555',offline:'#6272a4'};
+        dot.style.background   = clr[d.discord_status]||'#6272a4';
+        dot.style.boxShadow    = d.discord_status!=='offline'?`0 0 10px ${clr[d.discord_status]}`:'none';
+        const tag=document.getElementById('dc-tag'), act=document.getElementById('dc-act');
+        if(d.listening_to_spotify){
+            tag.innerText='Listening to Spotify'; act.innerText=`${d.spotify.song} — ${d.spotify.artist}`;
+        } else if(d.activities?.length){
+            const cu=d.activities.find(a=>a.type===4), ga=d.activities.find(a=>a.type===0);
+            if(cu){
+                let em = cu.emoji?.id ? `<img src="https://cdn.discordapp.com/emojis/${cu.emoji.id}.${cu.emoji.animated?'gif':'png'}" style="width:1.1rem;height:1.1rem;margin-right:4px;">` : cu.emoji ? `<span style="margin-right:4px;">${cu.emoji.name}</span>` : '';
+                tag.innerText='Discord Presence'; act.innerHTML=em+(cu.state||'');
+            } else if(ga){ tag.innerText='Currently Playing'; act.innerText=`Playing ${ga.name}`; }
+        } else { tag.innerText='Live Status'; act.innerText='Chilling…'; }
+    } catch(e){}
+    try{
+        const d=(await (await fetch(`https://discord.com/api/v9/invites/${CONFIG.discord.serverInvite}?with_counts=true`)).json());
+        if(d?.guild?.name) document.getElementById('dc-name').innerText=d.guild.name;
+    } catch(e){}
+}
+fetchLanyard(); setInterval(fetchLanyard, 15000);
+
+/* ── POPULATE ── */
+document.getElementById('el-name').innerText       = CONFIG.name;
+document.getElementById('el-tagline').innerText    = CONFIG.tagline;
+document.getElementById('el-bio').innerText        = CONFIG.bio;
+document.getElementById('el-quote').innerText      = CONFIG.quote;
+document.getElementById('el-stat').innerText       = CONFIG.projectsStat;
+document.getElementById('el-proj-desc').innerText  = CONFIG.projectsDesc;
+document.getElementById('el-port-desc').innerText  = CONFIG.portfolioDesc;
+
+// Commission status colour
+if(!CONFIG.commissionsOpen){
+    const sb=document.getElementById('status-box');
+    sb.style.background='rgba(255,85,85,.05)'; sb.style.borderColor='rgba(255,85,85,.2)';
+    sb.querySelector('.status-dot').style.cssText='background:#ff5555;box-shadow:0 0 10px #ff5555;width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:10px;';
+    sb.querySelector('.status-text').style.color='#ff5555';
+    document.getElementById('status-txt').innerText='Currently Closed';
+}
+
+// Links
+const lw=document.getElementById('links-wrap');
+CONFIG.links.forEach(l=>{ const a=document.createElement('a'); a.className='link-item'; a.href=l.url; a.target='_blank'; a.innerHTML=`${l.label} <span>→</span>`; lw.appendChild(a); });
+
+/* ── MARQUEE ROWS ── */
+function buildMarqueeRow(rowId, items){
+    const row = document.getElementById(rowId);
+    // duplicate items 4x so the infinite scroll never gaps
+    const all = [...items,...items,...items,...items];
+    all.forEach(s=>{
+        const span = document.createElement('span');
+        span.className = 'tech-pill';
+        span.innerText = s;
+        row.appendChild(span);
+    });
+}
+buildMarqueeRow('marquee-row1', CONFIG.skillsRow1);
+buildMarqueeRow('marquee-row2', CONFIG.skillsRow2);
+
+/* ── MUSIC ── */
+const aud = document.getElementById('m-audio');
+let mPlaying = false, mCI = 0;
+const fmt = t => { if(isNaN(t))return'0:00'; const m=Math.floor(t/60),s=Math.floor(t%60); return`${m}:${s<10?'0':''}${s}`; };
+function loadSong(i){ const s=CONFIG.playlist[i]||CONFIG.playlist[0]; document.getElementById('m-title').innerText=s.title; document.getElementById('m-artist').innerText=s.artist; document.getElementById('m-art').src=s.cover||''; aud.src=s.url; aud.volume=.65; document.getElementById('m-fill').style.width='0%'; document.getElementById('m-time').innerText='0:00'; }
+function autoPlay(){ aud.play().then(()=>{ mPlaying=true; document.getElementById('m-pbtn').innerText='⏸'; }).catch(()=>{}); }
+function togglePlay(){ if(!CONFIG.playlist[mCI]?.url)return; if(mPlaying){aud.pause();document.getElementById('m-pbtn').innerText='▶';mPlaying=false;}else autoPlay(); }
+function prevSong(){ mCI=(mCI-1+CONFIG.playlist.length)%CONFIG.playlist.length; loadSong(mCI); if(mPlaying)autoPlay(); }
+function nextSong(){ mCI=(mCI+1)%CONFIG.playlist.length; loadSong(mCI); if(mPlaying)autoPlay(); }
+aud.ontimeupdate=()=>{ if(aud.duration){ document.getElementById('m-fill').style.width=(aud.currentTime/aud.duration*100)+'%'; document.getElementById('m-time').innerText=fmt(aud.currentTime); } };
+aud.onended=()=>{ mCI=(mCI+1)%CONFIG.playlist.length; loadSong(mCI); autoPlay(); };
+document.getElementById('m-bar').addEventListener('click',e=>{ if(!aud.duration)return; const r=e.currentTarget.getBoundingClientRect(); aud.currentTime=(e.clientX-r.left)/r.width*aud.duration; });
+document.getElementById('v-bar').addEventListener('click',e=>{ const r=e.currentTarget.getBoundingClientRect(); const v=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); aud.volume=v; document.getElementById('v-fill').style.width=(v*100)+'%'; document.getElementById('vol-slider').value=v; });
+document.getElementById('vol-slider').addEventListener('input',e=>{ aud.volume=+e.target.value; document.getElementById('v-fill').style.width=(+e.target.value*100)+'%'; });
+loadSong(0);
+
+/* ── PORTFOLIO OVERLAY ── */
+function openPortfolio(){
+    const ov=document.getElementById('portfolio-overlay'), co=document.getElementById('port-container');
+    co.innerHTML='';
+    Object.entries(CONFIG.portfolio).forEach(([cat,imgs])=>{
+        if(!imgs.length) return;
+        const sec=document.createElement('div'); sec.className='portfolio-section';
+        sec.innerHTML=`<h3 class="section-title">${cat}</h3><div class="image-grid">${imgs.map(src=>`<img src="${src}" class="portfolio-img" onclick="openLightbox(this.src)" alt="" loading="lazy">`).join('')}</div>`;
+        co.appendChild(sec);
+    });
+    ov.style.display='block';
+    setTimeout(()=>{ ov.style.opacity='1'; document.querySelectorAll('.portfolio-section').forEach((s,i)=>setTimeout(()=>s.classList.add('visible'),i*150)); }, 50);
+}
+function closePortfolio(){ const ov=document.getElementById('portfolio-overlay'); ov.style.opacity='0'; setTimeout(()=>{ ov.style.display='none'; document.querySelectorAll('.portfolio-section').forEach(s=>s.classList.remove('visible')); }, 800); }
+
+/* ── LIGHTBOX ── */
+function openLightbox(src){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); img.src=src; lb.style.display='flex'; setTimeout(()=>{ lb.style.opacity='1'; img.style.transform='scale(1)'; },50); }
+function closeLightbox(){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); lb.style.opacity='0'; img.style.transform='scale(.8)'; setTimeout(()=>lb.style.display='none',500); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLightbox(); closePortfolio(); } });
+
+/* ── VANILLA TILT ── */
+VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, glare:true, 'max-glare':.3 });
+</script>
+</body>
+</html>
