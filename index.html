@@ -95,13 +95,26 @@
         
         .discord-widget-container { width: 100%; max-width: 1100px; margin-bottom: 20px; z-index: 10; }
         .discord-card {
+            position: relative;
+            overflow: hidden;
             background: rgba(59,130,246,0.05); backdrop-filter: blur(20px);
             border: 1px solid var(--border); border-radius: 24px; padding: 25px;
             transition: transform .45s cubic-bezier(.22,1,.36,1), border-color .35s ease, background .35s ease, box-shadow .45s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 0 20px var(--blue-glow);
             display: flex; align-items: center; gap: 20px;
         }
+        .discord-card::before {
+            content: '';
+            position: absolute;
+            inset: -30%;
+            background: radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.22), rgba(96, 165, 250, 0.08) 28%, transparent 60%);
+            opacity: 0;
+            transform: scale(.9);
+            transition: opacity .45s ease, transform .45s ease;
+            pointer-events: none;
+        }
         .discord-card:hover { border-color: var(--accent); background: rgba(59,130,246,.08); transform: translateY(-4px); box-shadow: 0 15px 35px rgba(59,130,246,.1); }
+        .discord-card:hover::before { opacity: 1; transform: scale(1); }
         .discord-pfp-wrapper { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
         .discord-pfp { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--border); object-fit: cover; }
         .discord-status-dot { position: absolute; bottom: 2px; right: 2px; width: 20px; height: 20px; border-radius: 50%; border: 4px solid #060810; background: var(--offline); }
@@ -117,16 +130,29 @@
         }
 
         .card {
+            position: relative;
+            overflow: hidden;
             background: var(--glass); backdrop-filter: blur(15px);
             border: 1px solid var(--border); border-radius: 24px; padding: 30px;
             display: flex; flex-direction: column;
             transition: transform .45s cubic-bezier(.22,1,.36,1), border-color .35s ease, background .35s ease, box-shadow .45s ease;
             box-shadow: inset 0 0 15px rgba(59,130,246,.02);
         }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: -35%;
+            background: radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.24), rgba(59, 130, 246, 0.1) 30%, transparent 62%);
+            opacity: 0;
+            transform: scale(.9);
+            transition: opacity .45s ease, transform .45s ease;
+            pointer-events: none;
+        }
         .card:hover {
             border-color: var(--accent); background: rgba(59,130,246,.08);
             transform: translateY(-4px); box-shadow: 0 15px 35px rgba(59,130,246,.1);
         }
+        .card:hover::before { opacity: 1; transform: scale(1); }
 
         .c-profile    { grid-column: span 2; }
         .c-stack      { grid-column: span 2; overflow: hidden; padding: 30px 0; }
@@ -687,6 +713,9 @@ VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, g
 </script>
 </body>
 </html>
+
+
+
 
 
 
