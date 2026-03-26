@@ -250,6 +250,29 @@
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:30000; display:none; justify-content:center; align-items:center; opacity:0; transition:opacity .5s ease; backdrop-filter:blur(10px); }
         #lightbox img { max-width:90%; max-height:85%; border-radius:10px; box-shadow:0 0 50px rgba(59,130,246,.3); transform:scale(.8); transition:transform .5s cubic-bezier(.175,.885,.32,1.275); cursor:pointer !important; }
 
+        #steal-warning {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 221, 87, 0.9);
+            color: #111827;
+            font-size: clamp(2rem, 5vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+            z-index: 40000;
+            opacity: 0;
+            transition: opacity .2s ease;
+            text-shadow: 0 0 18px rgba(255,255,255,.35);
+        }
+        #steal-warning.visible {
+            display: flex;
+            opacity: 1;
+        }
+
         
         ::-webkit-scrollbar { width:7px; }
         ::-webkit-scrollbar-track { background:#060810; }
@@ -378,6 +401,8 @@
 <div id="lightbox" onclick="closeLightbox()">
     <img id="lb-img" src="" alt="">
 </div>
+
+<div id="steal-warning">⚠️ NO STEALING BRO</div>
 
 <script>
 const CONFIG = {
@@ -565,6 +590,9 @@ buildMarqueeRow('marquee-row2', CONFIG.skillsRow2);
 
 const aud = document.getElementById('m-audio');
 let mPlaying = false, mCI = 0;
+let portfolioRightClickCount = 0;
+let portfolioRightClickTimer = null;
+let warningTimer = null;
 const fmt = t => { if(isNaN(t))return'0:00'; const m=Math.floor(t/60),s=Math.floor(t%60); return`${m}:${s<10?'0':''}${s}`; };
 function loadSong(i){ const s=CONFIG.playlist[i]||CONFIG.playlist[0]; document.getElementById('m-title').innerText=s.title; document.getElementById('m-artist').innerText=s.artist; document.getElementById('m-art').src=s.cover||''; aud.src=s.url; aud.volume=.65; document.getElementById('m-fill').style.width='0%'; document.getElementById('m-time').innerText='0:00'; }
 function autoPlay(){ aud.play().then(()=>{ mPlaying=true; }).catch(()=>{}); }
@@ -575,6 +603,31 @@ aud.onplay=()=>{ mPlaying=true; };
 document.getElementById('m-bar').addEventListener('click',e=>{ if(!aud.duration)return; const r=e.currentTarget.getBoundingClientRect(); aud.currentTime=(e.clientX-r.left)/r.width*aud.duration; });
 document.getElementById('vol-slider').addEventListener('input',e=>{ aud.volume=+e.target.value; });
 loadSong(0);
+
+function showStealWarning(){
+    const warning = document.getElementById('steal-warning');
+    clearTimeout(warningTimer);
+    warning.classList.add('visible');
+    warningTimer = setTimeout(()=>{
+        warning.classList.remove('visible');
+    }, 2000);
+}
+
+document.addEventListener('contextmenu', e => {
+    const portfolioOpen = document.getElementById('portfolio-overlay').style.display === 'block';
+    if(!portfolioOpen) return;
+    e.preventDefault();
+    portfolioRightClickCount += 1;
+    clearTimeout(portfolioRightClickTimer);
+    if(portfolioRightClickCount >= 2){
+        portfolioRightClickCount = 0;
+        showStealWarning();
+        return;
+    }
+    portfolioRightClickTimer = setTimeout(()=>{
+        portfolioRightClickCount = 0;
+    }, 500);
+});
 
 function openPortfolio(){
     const ov=document.getElementById('portfolio-overlay'), co=document.getElementById('port-container');
@@ -588,7 +641,7 @@ function openPortfolio(){
     ov.style.display='block';
     setTimeout(()=>{ ov.style.opacity='1'; document.querySelectorAll('.portfolio-section').forEach((s,i)=>setTimeout(()=>s.classList.add('visible'),i*150)); }, 50);
 }
-function closePortfolio(){ const ov=document.getElementById('portfolio-overlay'); ov.style.opacity='0'; setTimeout(()=>{ ov.style.display='none'; document.querySelectorAll('.portfolio-section').forEach(s=>s.classList.remove('visible')); }, 800); }
+function closePortfolio(){ const ov=document.getElementById('portfolio-overlay'); portfolioRightClickCount = 0; clearTimeout(portfolioRightClickTimer); ov.style.opacity='0'; setTimeout(()=>{ ov.style.display='none'; document.querySelectorAll('.portfolio-section').forEach(s=>s.classList.remove('visible')); }, 800); }
 
 function openLightbox(src){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); img.src=src; lb.style.display='flex'; setTimeout(()=>{ lb.style.opacity='1'; img.style.transform='scale(1)'; },50); }
 function closeLightbox(){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); lb.style.opacity='0'; img.style.transform='scale(.8)'; setTimeout(()=>lb.style.display='none',500); }
@@ -598,6 +651,10 @@ VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, g
 </script>
 </body>
 </html>
+
+
+
+
 
 
 
