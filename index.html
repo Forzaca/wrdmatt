@@ -683,10 +683,11 @@ function openLightbox(src){ const lb=document.getElementById('lightbox'),img=doc
 function closeLightbox(){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); lb.style.opacity='0'; img.style.transform='scale(.8)'; setTimeout(()=>lb.style.display='none',500); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLightbox(); closePortfolio(); } });
 
-VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, glare:true, 'max-glare':.3 });
+VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, glare:false });
 </script>
 </body>
 </html>
+
 
 
 
