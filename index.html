@@ -43,9 +43,10 @@
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
+            scroll-behavior: smooth;
         }
 
-        /* ── ENTER SCREEN ── */
+        
         #enter-screen {
             position: fixed; inset: 0;
             background: #060810;
@@ -57,15 +58,15 @@
         .enter-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 6px; color: #fff; text-transform: uppercase; text-shadow: 0 0 15px var(--accent); }
         @keyframes pulse-glow { 0%,100% { opacity:.5; transform:scale(.98); } 50% { opacity:1; transform:scale(1); } }
 
-        /* ── MAIN ── */
+        
         #main-content {
-            opacity: 0; transition: opacity 1.5s ease;
+            opacity: 0; transform: translateY(18px); transition: opacity 1.2s ease, transform 1.2s ease;
             width: 100%; display: flex; flex-direction: column; align-items: center;
             pointer-events: none;
         }
-        #main-content.visible { opacity: 1; pointer-events: auto; }
+        #main-content.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        /* ── CURSOR ── */
+        
         #cursor {
             width: 20px; height: 20px;
             background: rgba(59,130,246,0.4); border: 1px solid var(--accent);
@@ -73,26 +74,26 @@
             transform: translate(-50%,-50%); transition: width .2s, height .2s;
         }
 
-        /* ── SNOW ── */
+        
         #snow { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-        /* ── DISCORD TOP CARD ── */
+        
         .discord-widget-container { width: 100%; max-width: 1100px; margin-bottom: 20px; z-index: 10; }
         .discord-card {
             background: rgba(59,130,246,0.05); backdrop-filter: blur(20px);
             border: 1px solid var(--border); border-radius: 24px; padding: 25px;
-            transition: .4s cubic-bezier(.175,.885,.32,1.275);
+            transition: transform .35s ease, border-color .35s ease, background .35s ease, box-shadow .35s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 0 20px var(--blue-glow);
             display: flex; align-items: center; gap: 20px;
         }
-        .discord-card:hover { border-color: var(--accent); background: rgba(59,130,246,.08); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,.1); }
+        .discord-card:hover { border-color: var(--accent); background: rgba(59,130,246,.08); transform: translateY(-4px); box-shadow: 0 15px 35px rgba(59,130,246,.1); }
         .discord-pfp-wrapper { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
         .discord-pfp { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--border); object-fit: cover; }
         .discord-status-dot { position: absolute; bottom: 2px; right: 2px; width: 20px; height: 20px; border-radius: 50%; border: 4px solid #060810; background: var(--offline); }
         .discord-info h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
         .discord-activity { font-size: .85rem; color: #aaa; line-height: 1.4; display: flex; align-items: center; }
 
-        /* ── BENTO GRID ── */
+        
         .bento-grid {
             position: relative; z-index: 2;
             display: grid;
@@ -104,12 +105,12 @@
             background: var(--glass); backdrop-filter: blur(15px);
             border: 1px solid var(--border); border-radius: 24px; padding: 30px;
             display: flex; flex-direction: column;
-            transition: .4s cubic-bezier(.175,.885,.32,1.275);
+            transition: transform .35s ease, border-color .35s ease, background .35s ease, box-shadow .35s ease;
             box-shadow: inset 0 0 15px rgba(59,130,246,.02);
         }
         .card:hover {
             border-color: var(--accent); background: rgba(59,130,246,.08);
-            transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,.1);
+            transform: translateY(-4px); box-shadow: 0 15px 35px rgba(59,130,246,.1);
         }
 
         .c-profile    { grid-column: span 2; }
@@ -123,12 +124,12 @@
         h1 {
             font-size: 2.5rem; font-weight: 800; letter-spacing: -1px;
             background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .tagline { color: var(--accent); text-transform: uppercase; font-size: .7rem; letter-spacing: 3px; font-weight: 700; margin-bottom: 10px; }
         .bio { font-size: .95rem; line-height: 1.6; color: #aaa; margin-top: 15px; }
 
-        /* ── MARQUEE / STACK ── */
+        
         .stack-label { color: var(--accent); text-transform: uppercase; font-size: .7rem; letter-spacing: 3px; font-weight: 700; padding: 0 30px; margin-bottom: 18px; }
         .marquee-outer { width: 100%; overflow: hidden; position: relative; }
         .marquee-outer::before,
@@ -167,7 +168,7 @@
         }
         .tech-pill:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(59,130,246,.12); }
 
-        /* ── LINKS ── */
+        
         .link-item {
             display: flex; align-items: center; justify-content: space-between;
             text-decoration: none; color: #fff; padding: 12px; border-radius: 12px;
@@ -175,7 +176,7 @@
         }
         .link-item:hover { background: var(--accent); color: #fff; }
 
-        /* ── STATUS ── */
+        
         .status-container {
             display: flex; align-items: center; justify-content: center;
             padding: 15px; background: rgba(80,250,123,.05);
@@ -186,7 +187,7 @@
         .status-dot { width:8px; height:8px; background:#50fa7b; border-radius:50%; display:inline-block; margin-right:10px; box-shadow:0 0 10px #50fa7b; }
         .status-text { font-size:.75rem; font-weight:700; letter-spacing:1px; color:#50fa7b; text-transform:uppercase; }
 
-        /* ── MUSIC PLAYER (fixed bottom-right) ── */
+        
         #music-widget {
             position: fixed;
             bottom: 24px; right: 24px;
@@ -218,13 +219,13 @@
         .vol-fill { height:100%; background:linear-gradient(90deg,var(--accent),#06b6d4); border-radius:3px; width:65%; }
         .mc-time { font-size:.6rem; color:#444; white-space:nowrap; }
 
-        /* ── VOLUME BOTTOM ── */
+        
         .volume-container { width:100%; max-width:1100px; margin-top:30px; padding:20px; display:flex; flex-direction:column; align-items:center; gap:15px; z-index:10; }
-        .volume-slider { -webkit-appearance:none; width:250px; height:3px; background:rgba(59,130,246,.15); border-radius:5px; outline:none; }
+        .volume-slider { appearance:none; -webkit-appearance:none; width:250px; height:3px; background:rgba(59,130,246,.15); border-radius:5px; outline:none; }
         .volume-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; background:var(--accent); border-radius:50%; cursor:none; box-shadow:0 0 15px var(--accent); border:2px solid #060810; }
         .volume-label { font-size:.65rem; text-transform:uppercase; letter-spacing:4px; color:var(--accent); font-weight:800; opacity:.8; }
 
-        /* ── PORTFOLIO OVERLAY ── */
+        
         #portfolio-overlay { position:fixed; inset:0; background:#060810; z-index:10000; display:none; opacity:0; overflow-y:auto; padding:60px 20px; transition:opacity .8s ease; }
         .portfolio-content { max-width:1200px; margin:0 auto; }
         .portfolio-section { margin-bottom:80px; opacity:0; transform:translateY(30px); transition:1s ease; }
@@ -236,11 +237,27 @@
         .close-portfolio { position:fixed; top:30px; right:30px; background:var(--accent); color:#fff; border:none; padding:10px 20px; border-radius:50px; font-weight:800; z-index:10001; cursor:pointer !important; font-size:.8rem; letter-spacing:2px; transition:.3s; }
         .close-portfolio:hover { background:#60a5fa; transform:scale(1.05); }
 
-        /* ── LIGHTBOX ── */
+        .portfolio-grid-preview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .portfolio-slot {
+            height: 92px;
+            border-radius: 16px;
+            border: 1px solid rgba(59,130,246,.22);
+            background:
+                linear-gradient(135deg, rgba(59,130,246,.18), rgba(6,182,212,.05)),
+                rgba(255,255,255,.02);
+            box-shadow: inset 0 0 18px rgba(59,130,246,.08);
+        }
+
+        
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:30000; display:none; justify-content:center; align-items:center; opacity:0; transition:opacity .5s ease; backdrop-filter:blur(10px); }
         #lightbox img { max-width:90%; max-height:85%; border-radius:10px; box-shadow:0 0 50px rgba(59,130,246,.3); transform:scale(.8); transition:transform .5s cubic-bezier(.175,.885,.32,1.275); cursor:pointer !important; }
 
-        /* ── SCROLLBAR ── */
+        
         ::-webkit-scrollbar { width:7px; }
         ::-webkit-scrollbar-track { background:#060810; }
         ::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--accent),#6366f1); border-radius:4px; }
@@ -249,6 +266,9 @@
             .bento-grid { grid-template-columns:1fr; }
             .card { grid-column:span 1 !important; }
             body { overflow-y:auto; }
+        }
+        @media (max-width:640px) {
+            .portfolio-grid-preview { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -265,7 +285,6 @@
 
 <div id="main-content">
 
-    <!-- DISCORD LIVE CARD -->
     <div class="discord-widget-container">
         <div class="discord-card" data-tilt>
             <div class="discord-pfp-wrapper">
@@ -282,14 +301,13 @@
 
     <main class="bento-grid">
 
-        <!-- PROFILE -->
         <div class="card c-profile" data-tilt>
             <div class="tagline" id="el-tagline">Designer &amp; Developer</div>
             <h1 id="el-name">Matt.Himself</h1>
             <p class="bio" id="el-bio"></p>
         </div>
 
-        <!-- STACK — marquee rows -->
+        
         <div class="card c-stack" data-tilt>
             <div class="stack-label">Softwares Used</div>
             <div class="marquee-outer">
@@ -300,13 +318,11 @@
             </div>
         </div>
 
-        <!-- LINKS -->
         <div class="card c-links" data-tilt>
             <div class="tagline">Connect</div>
             <div id="links-wrap" style="margin-top:15px;"></div>
         </div>
 
-        <!-- STATUS -->
         <div class="card c-status" data-tilt>
             <div class="tagline">Work Status</div>
             <div id="status-box" class="status-container">
@@ -315,37 +331,40 @@
             </div>
         </div>
 
-        <!-- RECENT PROJECTS -->
         <div class="card c-projects" data-tilt>
             <div class="tagline">Recent Projects</div>
             <h2 id="el-stat" style="margin-top:10px;font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"></h2>
             <p class="bio" style="font-size:.83rem;" id="el-proj-desc"></p>
         </div>
 
-        <!-- PHILOSOPHY -->
         <div class="card c-philosophy" data-tilt>
             <div class="tagline">Mindset</div>
             <p class="bio" style="font-size:.83rem;color:var(--accent-light);" id="el-quote"></p>
         </div>
 
-        <!-- PORTFOLIO BUTTON -->
         <div class="card c-portfolio" data-tilt onclick="openPortfolio()">
             <div class="tagline">Works</div>
             <h2 style="font-size:1.8rem;font-weight:800;color:#fff;">PORTFOLIO</h2>
             <p class="bio" style="font-size:.85rem;" id="el-port-desc"></p>
+            <div class="portfolio-grid-preview" aria-hidden="true">
+                <div class="portfolio-slot"></div>
+                <div class="portfolio-slot"></div>
+                <div class="portfolio-slot"></div>
+                <div class="portfolio-slot"></div>
+                <div class="portfolio-slot"></div>
+                <div class="portfolio-slot"></div>
+            </div>
         </div>
 
     </main>
 
-    <!-- VOLUME BOTTOM -->
     <div class="volume-container">
         <span class="volume-label">Configure Volume</span>
         <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.65">
     </div>
 
-</div><!-- /main-content -->
+</div>
 
-<!-- MUSIC WIDGET — fixed bottom right -->
 <div id="music-widget">
     <div class="m-wrap">
         <img id="m-art" class="m-art-img" src="" alt="cover">
@@ -368,39 +387,33 @@
     <audio id="m-audio" preload="none"></audio>
 </div>
 
-<!-- PORTFOLIO OVERLAY -->
 <div id="portfolio-overlay">
     <button class="close-portfolio" onclick="closePortfolio()">BACK</button>
     <div class="portfolio-content" id="port-container"></div>
 </div>
 
-<!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
     <img id="lb-img" src="" alt="">
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     ★  ALL EDITABLE DATA — change anything here freely
-═══════════════════════════════════════════════════ -->
 <script>
 const CONFIG = {
 
-    /* ── PROFILE ─────────────────────────────────── */
+    
     name:    "Matt.Himself",
     tagline: "Designer & Developer",
     bio:     "Designer, developer, and creator crafting polished digital experiences. From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.",
     quote:   '"Your future is created by what you do today, not tomorrow."',
 
-    /* ── DISCORD ─────────────────────────────────── */
+    
     discord: {
-        userId:       "1272978844248178730",   // your Discord user ID — Lanyard live presence
-                      // discord.gg/XXXX — used for server name
+        userId: "1272978844248178730",
     },
 
-    /* ── COMMISSION STATUS ───────────────────────── */
-    commissionsOpen: false,   // true = green "Available",  false = red "Closed"
+    
+    commissionsOpen: false,
 
-    /* ── SKILLS — split into two rows for the marquee ── */
+    
     skillsRow1: [
         "Photoshop", "Illustrator", "After Effects", "Premiere Pro",
         "Figma", "Canva", "Blender", "VS Code",
@@ -410,20 +423,20 @@ const CONFIG = {
         "Python", "Discord.js", "Git", "Vercel",
     ],
 
-    /* ── LINKS ───────────────────────────────────── */
+    
     links: [
         { label: "Commissions",      url: "https://discord.gg/EaKVTaMt8p" },
         { label: "Big Sky Roleplay", url: "https://discord.gg/bigsky" },
     ],
 
-    /* ── PROJECTS STAT ───────────────────────────── */
+    
     projectsStat: "200+",
     projectsDesc: "Projects Delivered — From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.",
 
-    /* ── PORTFOLIO BUTTON SUB TEXT ───────────────── */
+    
     portfolioDesc: "View all of Matt's work across design, development, and more.",
 
-    /* ── MUSIC PLAYLIST ──────────────────────────── */
+    
     playlist: [
         {
             title:  "Not You Too",
@@ -439,16 +452,7 @@ const CONFIG = {
         },
     ],
 
-    /*
-     * ── PORTFOLIO ─────────────────────────────────
-     * Each key = a section title in the overlay.
-     * Values = image paths relative to index.html.
-     *
-     * FILE ROOTS:
-     *   images/tabicon.png
-     *   images/Profile-Photo.png
-     *   images/Project1.png  →  images/Project12.png
-     */
+    
     portfolio: {
         "Featured Work": [
             "images/Project1.png",
@@ -463,14 +467,14 @@ const CONFIG = {
             "images/Project10.png",
             "images/Project11.png",
             "images/Project12.png",
+            "images/Project13.png",
+            "images/Project14.png",
+            "images/Project15.png",
         ],
     },
 
 };
-/* ═══════════════ END OF EDITABLE DATA ═══════════════ */
 
-
-/* ── TITLE ANIMATION ── */
 const _t = CONFIG.name + " ✦", _chars = Array.from(_t);
 let _ti = 0, _ta = true;
 setInterval(()=>{
@@ -480,7 +484,6 @@ setInterval(()=>{
     document.title = _chars.slice(0,_ti).join('') || "m";
 }, 120);
 
-/* ── SNOW / PARTICLES ── */
 (()=>{
     const c = document.getElementById('snow'), ctx = c.getContext('2d');
     let fl = [];
@@ -489,13 +492,11 @@ setInterval(()=>{
     window.addEventListener('resize', init); init(); draw();
 })();
 
-/* ── CURSOR ── */
 const cr = document.getElementById('cursor');
 document.addEventListener('mousemove', e => { cr.style.left=e.clientX+'px'; cr.style.top=e.clientY+'px'; });
 document.addEventListener('mousedown', () => cr.style.transform='translate(-50%,-50%) scale(.78)');
 document.addEventListener('mouseup',   () => cr.style.transform='translate(-50%,-50%) scale(1)');
 
-/* ── ENTER ── */
 function startApp(){
     const es = document.getElementById('enter-screen');
     es.style.opacity = '0';
@@ -504,7 +505,6 @@ function startApp(){
     setTimeout(()=>{ if(!mPlaying && CONFIG.playlist[mCI]?.url) autoPlay(); }, 900);
 }
 
-/* ── LANYARD (live Discord presence) ── */
 async function fetchLanyard(){
     try{
         const uid = CONFIG.discord.userId;
@@ -539,16 +539,10 @@ async function fetchLanyard(){
             act.innerText = 'Chilling…';
         }
     } catch(e){}
-    /* server name from invite */
-    try{
-        const d = (await (await fetch(`https://discord.com/api/v9/invites/${CONFIG.discord.serverInvite}?with_counts=true`)).json());
-        if(d?.guild?.name) document.getElementById('dc-name').innerText = d.guild.name;
-    } catch(e){}
 }
 fetchLanyard();
 setInterval(fetchLanyard, 15000);
 
-/* ── POPULATE ── */
 document.getElementById('el-name').innerText      = CONFIG.name;
 document.getElementById('el-tagline').innerText   = CONFIG.tagline;
 document.getElementById('el-bio').innerText       = CONFIG.bio;
@@ -557,7 +551,6 @@ document.getElementById('el-stat').innerText      = CONFIG.projectsStat;
 document.getElementById('el-proj-desc').innerText = CONFIG.projectsDesc;
 document.getElementById('el-port-desc').innerText = CONFIG.portfolioDesc;
 
-/* commission status colour */
 if(!CONFIG.commissionsOpen){
     const sb = document.getElementById('status-box');
     sb.style.background   = 'rgba(255,85,85,.05)';
@@ -567,7 +560,6 @@ if(!CONFIG.commissionsOpen){
     document.getElementById('status-txt').innerText = 'Currently Closed';
 }
 
-/* links */
 const lw = document.getElementById('links-wrap');
 CONFIG.links.forEach(l=>{
     const a = document.createElement('a');
@@ -576,7 +568,6 @@ CONFIG.links.forEach(l=>{
     lw.appendChild(a);
 });
 
-/* ── MARQUEE ROWS ── */
 function buildMarqueeRow(rowId, items){
     const row = document.getElementById(rowId);
     [...items,...items,...items,...items].forEach(s=>{
@@ -589,7 +580,6 @@ function buildMarqueeRow(rowId, items){
 buildMarqueeRow('marquee-row1', CONFIG.skillsRow1);
 buildMarqueeRow('marquee-row2', CONFIG.skillsRow2);
 
-/* ── MUSIC ── */
 const aud = document.getElementById('m-audio');
 let mPlaying = false, mCI = 0;
 const fmt = t => { if(isNaN(t))return'0:00'; const m=Math.floor(t/60),s=Math.floor(t%60); return`${m}:${s<10?'0':''}${s}`; };
@@ -605,7 +595,6 @@ document.getElementById('v-bar').addEventListener('click',e=>{ const r=e.current
 document.getElementById('vol-slider').addEventListener('input',e=>{ aud.volume=+e.target.value; document.getElementById('v-fill').style.width=(+e.target.value*100)+'%'; });
 loadSong(0);
 
-/* ── PORTFOLIO OVERLAY ── */
 function openPortfolio(){
     const ov=document.getElementById('portfolio-overlay'), co=document.getElementById('port-container');
     co.innerHTML='';
@@ -620,13 +609,13 @@ function openPortfolio(){
 }
 function closePortfolio(){ const ov=document.getElementById('portfolio-overlay'); ov.style.opacity='0'; setTimeout(()=>{ ov.style.display='none'; document.querySelectorAll('.portfolio-section').forEach(s=>s.classList.remove('visible')); }, 800); }
 
-/* ── LIGHTBOX ── */
 function openLightbox(src){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); img.src=src; lb.style.display='flex'; setTimeout(()=>{ lb.style.opacity='1'; img.style.transform='scale(1)'; },50); }
 function closeLightbox(){ const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img'); lb.style.opacity='0'; img.style.transform='scale(.8)'; setTimeout(()=>lb.style.display='none',500); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLightbox(); closePortfolio(); } });
 
-/* ── VANILLA TILT ── */
 VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max:5, speed:400, glare:true, 'max-glare':.3 });
 </script>
 </body>
 </html>
+
+
