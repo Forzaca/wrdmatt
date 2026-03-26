@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matt Watermark</title>
+    <link rel="icon" href="../images/tabicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --panel: rgba(11, 20, 36, 0.78);
+            --panel-strong: rgba(14, 26, 46, 0.92);
+            --border: rgba(130, 183, 255, 0.18);
+            --accent: #78b7ff;
+            --accent-soft: rgba(120, 183, 255, 0.2);
+            --text: #f5f8ff;
+            --muted: #8fa4c5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, rgba(120, 183, 255, 0.18), transparent 34%),
+                linear-gradient(160deg, #050a14, #07111f 45%, #091728 100%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(120, 183, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120, 183, 255, 0.06) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: radial-gradient(circle at center, black 22%, transparent 78%);
+            -webkit-mask-image: radial-gradient(circle at center, black 22%, transparent 78%);
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 32px auto;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .controls {
+            padding: 24px;
+            position: sticky;
+            top: 24px;
+        }
+
+        .eyebrow {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 0.95;
+            margin-bottom: 14px;
+        }
+
+        .lead {
+            color: var(--muted);
+            font-size: 0.94rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .upload {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            border: 1px dashed rgba(120, 183, 255, 0.28);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            text-align: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color .25s ease, background .25s ease, transform .25s ease;
+        }
+
+        .upload:hover {
+            border-color: rgba(120, 183, 255, 0.55);
+            background: rgba(120, 183, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .value {
+            margin-top: 8px;
+            color: var(--text);
+            font-size: 0.88rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .primary {
+            background: linear-gradient(135deg, #7ebcff, #4d8fff);
+            color: #06111f;
+            box-shadow: 0 16px 32px rgba(77, 143, 255, 0.28);
+        }
+
+        .secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .preview {
+            padding: 22px;
+        }
+
+        .stage {
+            min-height: 76vh;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+                var(--panel-strong);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 76vh;
+            border-radius: 20px;
+            display: none;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.36);
+        }
+
+        .placeholder {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px;
+        }
+
+        .placeholder strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .note {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(120, 183, 255, 0.08);
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 920px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                position: static;
+            }
+
+            .stage {
+                min-height: 58vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="panel controls">
+            <div class="eyebrow">Hidden Tool</div>
+            <h1>Watermark Lab</h1>
+            <p class="lead">Drop in an image, stamp it with your tab icon pattern, then finish it with a flowing Matt signature in the bottom-right.</p>
+
+            <div class="field">
+                <label for="image-input">Upload Image</label>
+                <label class="upload" for="image-input">Choose Image</label>
+                <input id="image-input" type="file" accept="image/*">
+            </div>
+
+            <div class="field">
+                <label for="icon-scale">Icon Size</label>
+                <input id="icon-scale" type="range" min="40" max="220" step="5" value="90">
+                <div class="value" id="icon-scale-value">90px</div>
+            </div>
+
+            <div class="field">
+                <label for="icon-opacity">Icon Opacity</label>
+                <input id="icon-opacity" type="range" min="0.06" max="0.45" step="0.01" value="0.18">
+                <div class="value" id="icon-opacity-value">18%</div>
+            </div>
+
+            <div class="field">
+                <label for="signature-opacity">Signature Strength</label>
+                <input id="signature-opacity" type="range" min="0.2" max="1" step="0.05" value="0.72">
+                <div class="value" id="signature-opacity-value">72%</div>
+            </div>
+
+            <div class="actions">
+                <button class="primary" id="download-btn" disabled>Download Watermarked Image</button>
+                <button class="secondary" id="rebuild-btn" disabled>Rebuild Watermark</button>
+            </div>
+
+            <div class="note">
+                Uses `../images/tabicon.png` for the repeating watermark and a fountain-pen style Matt signature layered in the lower-right corner.
+            </div>
+        </section>
+
+        <section class="panel preview">
+            <div class="stage">
+                <div class="placeholder" id="placeholder">
+                    <strong>Ready when you are</strong>
+                    Upload an image and this page will build a protected preview you can download.
+                </div>
+                <canvas id="preview-canvas"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const imageInput = document.getElementById('image-input');
+        const canvas = document.getElementById('preview-canvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('placeholder');
+        const downloadBtn = document.getElementById('download-btn');
+        const rebuildBtn = document.getElementById('rebuild-btn');
+        const iconScale = document.getElementById('icon-scale');
+        const iconOpacity = document.getElementById('icon-opacity');
+        const signatureOpacity = document.getElementById('signature-opacity');
+        const iconScaleValue = document.getElementById('icon-scale-value');
+        const iconOpacityValue = document.getElementById('icon-opacity-value');
+        const signatureOpacityValue = document.getElementById('signature-opacity-value');
+
+        const sourceImage = new Image();
+        const watermarkIcon = new Image();
+        let hasSource = false;
+
+        sourceImage.crossOrigin = 'anonymous';
+        watermarkIcon.crossOrigin = 'anonymous';
+        watermarkIcon.src = '../images/tabicon.png';
+
+        function updateReadouts() {
+            iconScaleValue.textContent = `${iconScale.value}px`;
+            iconOpacityValue.textContent = `${Math.round(Number(iconOpacity.value) * 100)}%`;
+            signatureOpacityValue.textContent = `${Math.round(Number(signatureOpacity.value) * 100)}%`;
+        }
+
+        function drawSignature(width, height) {
+            const pad = Math.max(28, width * 0.03);
+            const fontSize = Math.max(42, width * 0.06);
+            ctx.save();
+            ctx.globalAlpha = Number(signatureOpacity.value);
+            ctx.font = `${fontSize}px "Great Vibes", cursive`;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'bottom';
+            ctx.fillStyle = 'rgba(255,255,255,0.94)';
+            ctx.shadowColor = 'rgba(0,0,0,0.35)';
+            ctx.shadowBlur = 16;
+            ctx.fillText('Matt', width - pad, height - pad);
+            ctx.lineWidth = Math.max(1.6, fontSize * 0.018);
+            ctx.strokeStyle = 'rgba(24, 34, 54, 0.22)';
+            ctx.strokeText('Matt', width - pad, height - pad);
+            ctx.restore();
+        }
+
+        function drawWatermark() {
+            if (!hasSource || !sourceImage.src) return;
+
+            canvas.width = sourceImage.naturalWidth;
+            canvas.height = sourceImage.naturalHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+
+            const iconSize = Number(iconScale.value);
+            const gap = Math.max(34, iconSize * 0.55);
+            const step = iconSize + gap;
+
+            if (watermarkIcon.complete && watermarkIcon.naturalWidth) {
+                ctx.save();
+                ctx.globalAlpha = Number(iconOpacity.value);
+                for (let y = -iconSize; y < canvas.height + iconSize; y += step) {
+                    for (let x = -iconSize; x < canvas.width + iconSize; x += step) {
+                        ctx.drawImage(watermarkIcon, x, y, iconSize, iconSize);
+                    }
+                }
+                ctx.restore();
+            }
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(8, 12, 22, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            drawSignature(canvas.width, canvas.height);
+
+            placeholder.style.display = 'none';
+            canvas.style.display = 'block';
+            downloadBtn.disabled = false;
+            rebuildBtn.disabled = false;
+        }
+
+        function loadLocalImage(file) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                sourceImage.onload = () => {
+                    hasSource = true;
+                    drawWatermark();
+                };
+                sourceImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        imageInput.addEventListener('change', event => {
+            const [file] = event.target.files;
+            if (!file) return;
+            loadLocalImage(file);
+        });
+
+        [iconScale, iconOpacity, signatureOpacity].forEach(input => {
+            input.addEventListener('input', () => {
+                updateReadouts();
+                drawWatermark();
+            });
+        });
+
+        rebuildBtn.addEventListener('click', drawWatermark);
+
+        downloadBtn.addEventListener('click', () => {
+            if (!hasSource) return;
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'matt-watermarked.png';
+            link.click();
+        });
+
+        watermarkIcon.addEventListener('load', () => {
+            if (hasSource) drawWatermark();
+        });
+
+        updateReadouts();
+    </script>
+</body>
+</html>
