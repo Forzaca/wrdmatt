@@ -567,8 +567,7 @@ const aud = document.getElementById('m-audio');
 let mPlaying = false, mCI = 0;
 const fmt = t => { if(isNaN(t))return'0:00'; const m=Math.floor(t/60),s=Math.floor(t%60); return`${m}:${s<10?'0':''}${s}`; };
 function loadSong(i){ const s=CONFIG.playlist[i]||CONFIG.playlist[0]; document.getElementById('m-title').innerText=s.title; document.getElementById('m-artist').innerText=s.artist; document.getElementById('m-art').src=s.cover||''; aud.src=s.url; aud.volume=.65; document.getElementById('m-fill').style.width='0%'; document.getElementById('m-time').innerText='0:00'; }
-function autoPlay(){ aud.play().then(()=>{ mPlaying=true; document.getElementById('m-pbtn').innerText='⏸'; }).catch(()=>{}); }
-function togglePlay(){ if(!CONFIG.playlist[mCI]?.url)return; if(mPlaying){aud.pause();document.getElementById('m-pbtn').innerText='▶';mPlaying=false;}else autoPlay(); }
+function autoPlay(){ aud.play().then(()=>{ mPlaying=true; }).catch(()=>{}); }
 aud.ontimeupdate=()=>{ if(aud.duration){ document.getElementById('m-fill').style.width=(aud.currentTime/aud.duration*100)+'%'; document.getElementById('m-time').innerText=fmt(aud.currentTime); } };
 aud.onended=()=>{ mCI=(mCI+1)%CONFIG.playlist.length; loadSong(mCI); autoPlay(); };
 aud.onpause=()=>{ mPlaying=false; };
