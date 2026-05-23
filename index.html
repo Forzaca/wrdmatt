@@ -48,15 +48,8 @@
         .discord-card::before{content:'';position:absolute;inset:-30%;background:radial-gradient(circle at 50% 50%,rgba(96,165,250,.22),rgba(96,165,250,.08) 28%,transparent 60%);opacity:0;transform:scale(.9);transition:opacity .45s,transform .45s;pointer-events:none;}
         .discord-card:hover{border-color:var(--accent);background:rgba(59,130,246,.08);transform:translateY(-4px);box-shadow:0 15px 35px rgba(59,130,246,.15);}
         .discord-card:hover::before{opacity:1;transform:scale(1);}
-      
-        .discord-pfp-wrapper{position:relative;width:80px;height:80px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-      
-        .dc-svg-wrap{width:80px;height:80px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--border);background:rgba(59,130,246,.06);overflow:hidden;position:relative;}
-        .dc-svg-anim{overflow:visible;display:block;}
-        .dc-trace-outline{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(59,130,246,.8));stroke-dasharray:2000;stroke-dashoffset:2000;animation:dc-trace-loop 3.6s cubic-bezier(.4,0,.2,1) infinite;}
-        .dc-trace-fill{fill:#fff;stroke:none;opacity:0;animation:dc-fill-loop 3.6s ease infinite;}
-        @keyframes dc-trace-loop{0%{stroke-dashoffset:2000;opacity:1;}55%{stroke-dashoffset:0;opacity:1;}75%{stroke-dashoffset:0;opacity:.1;}100%{stroke-dashoffset:2000;opacity:0;}}
-        @keyframes dc-fill-loop{0%,50%{opacity:0;}68%{opacity:1;}88%{opacity:1;}100%{opacity:0;}}
+        .discord-pfp-wrapper{position:relative;width:80px;height:80px;flex-shrink:0;}
+        .discord-pfp{width:100%;height:100%;border-radius:50%;border:2px solid var(--border);object-fit:cover;}
         .discord-status-dot{position:absolute;bottom:2px;right:2px;width:20px;height:20px;border-radius:50%;border:4px solid #060810;background:#6272a4;}
         .discord-info h2{font-size:1.2rem;font-weight:800;margin-bottom:4px;}
         .discord-activity{font-size:.85rem;color:#aaa;line-height:1.4;display:flex;align-items:center;}
@@ -137,7 +130,7 @@
         .server-banner-img{width:100%;border-radius:12px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:cover;aspect-ratio:960/540;background:rgba(59,130,246,.04);display:block;opacity:0;transform:translateY(22px) scale(.97);}
         .server-banner-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1);}
         .server-banner-img:hover{transform:scale(1.01);box-shadow:0 0 24px rgba(59,130,246,.15);}
-   
+
         .logo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
         .logo-img{width:100%;border-radius:14px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:contain;aspect-ratio:1/1;background:rgba(255,255,255,.02);display:block;padding:8px;opacity:0;transform:translateY(28px) scale(.97);}
         .logo-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);}
@@ -200,14 +193,9 @@
     <div class="top-bar"><a class="contact-btn" href="https://discord.com/users/1272978844248178730" target="_blank">Contact Me</a></div>
     <div class="discord-widget-container">
         <div class="discord-card" data-tilt>
-            
+       
             <div class="discord-pfp-wrapper">
-                <div class="dc-svg-wrap">
-                    <svg class="dc-svg-anim" viewBox="0 0 560 90" width="72" height="36" xmlns="http://www.w3.org/2000/svg">
-                        <text x="50%" y="78" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="80" font-weight="800" letter-spacing="-3" class="dc-trace-fill">official.matt</text>
-                        <text x="50%" y="78" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="80" font-weight="800" letter-spacing="-3" class="dc-trace-outline">official.matt</text>
-                    </svg>
-                </div>
+                <img id="dc-pfp" src="images/Profile-Photo.png" class="discord-pfp" alt="pfp">
                 <div id="dc-dot" class="discord-status-dot"></div>
             </div>
             <div class="discord-info">
@@ -373,6 +361,7 @@ async function fetchLanyard(){
         const dat=(await(await fetch('https://api.lanyard.rest/v1/users/'+uid)).json());
         if(!dat.success)return;
         const d=dat.data;
+        if(d.discord_user.avatar)document.getElementById('dc-pfp').src='https://cdn.discordapp.com/avatars/'+uid+'/'+d.discord_user.avatar+'.webp?size=160';
         document.getElementById('dc-name').innerText=d.discord_user.global_name||d.discord_user.username;
         const dot=document.getElementById('dc-dot');
         const clr={online:'#50fa7b',idle:'#f1fa8c',dnd:'#ff5555',offline:'#6272a4'};
