@@ -762,7 +762,7 @@ function openPortfolio() {
         { id:'banners',         title:'Banners',        srcs:Array.from({length:sl.banners},       (_,i)=>`banners/banner${i+1}.png`),      grid:'banner-grid',        cls:'banner-img' },
         { id:'generic-banners', title:'Server Banners', srcs:Array.from({length:sl.serverBanners}, (_,i)=>`serverbanner/banner${i+1}.png`),  grid:'server-banner-grid', cls:'server-banner-img' },
         { id:'logos',           title:'Logos',          srcs:Array.from({length:sl.logos},         (_,i)=>`logos/logo${i+1}.png`),           grid:'logo-grid',          cls:'logo-img' },
-        { id:'photography',     title:'Photography',    srcs:Array.from({length:sl.photography},   (_,i)=>`photo/photo${i+1}.jpg`),          grid:'photo-grid',         cls:'photo-img' },
+        { id:'photography',     title:'Photography',    srcs:Array.from({length:sl.photography},   (_,i)=>`photo/photo${i+1}.png`),          grid:'photo-grid',         cls:'photo-img' },
     ];
 
     sections.forEach(s => co.appendChild(buildSection(s.id, s.title, s.srcs, s.grid, s.cls)));
