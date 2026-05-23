@@ -45,8 +45,15 @@
         .discord-card::before{content:'';position:absolute;inset:-30%;background:radial-gradient(circle at 50% 50%,rgba(96,165,250,.22),rgba(96,165,250,.08) 28%,transparent 60%);opacity:0;transform:scale(.9);transition:opacity .45s,transform .45s;pointer-events:none;}
         .discord-card:hover{border-color:var(--accent);background:rgba(59,130,246,.08);transform:translateY(-4px);box-shadow:0 15px 35px rgba(59,130,246,.15);}
         .discord-card:hover::before{opacity:1;transform:scale(1);}
-        .discord-pfp-wrapper{position:relative;width:80px;height:80px;flex-shrink:0;}
-        .discord-pfp{width:100%;height:100%;border-radius:50%;border:2px solid var(--border);object-fit:cover;}
+        /* Discord pfp wrapper now hosts the SVG animation */
+        .discord-pfp-wrapper{position:relative;width:80px;height:80px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+        /* SVG animation in discord card */
+        .dc-svg-wrap{width:80px;height:80px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--border);background:rgba(59,130,246,.06);overflow:hidden;position:relative;}
+        .dc-svg-anim{overflow:visible;display:block;}
+        .dc-trace-outline{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(59,130,246,.8));stroke-dasharray:2000;stroke-dashoffset:2000;animation:dc-trace-loop 3.6s cubic-bezier(.4,0,.2,1) infinite;}
+        .dc-trace-fill{fill:#fff;stroke:none;opacity:0;animation:dc-fill-loop 3.6s ease infinite;}
+        @keyframes dc-trace-loop{0%{stroke-dashoffset:2000;opacity:1;}55%{stroke-dashoffset:0;opacity:1;}75%{stroke-dashoffset:0;opacity:.1;}100%{stroke-dashoffset:2000;opacity:0;}}
+        @keyframes dc-fill-loop{0%,50%{opacity:0;}68%{opacity:1;}88%{opacity:1;}100%{opacity:0;}}
         .discord-status-dot{position:absolute;bottom:2px;right:2px;width:20px;height:20px;border-radius:50%;border:4px solid #060810;background:#6272a4;}
         .discord-info h2{font-size:1.2rem;font-weight:800;margin-bottom:4px;}
         .discord-activity{font-size:.85rem;color:#aaa;line-height:1.4;display:flex;align-items:center;}
@@ -102,7 +109,6 @@
         .volume-container{width:100%;max-width:1100px;margin-top:28px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;z-index:10;}
         .volume-slider{appearance:none;-webkit-appearance:none;width:250px;height:3px;background:rgba(59,130,246,.15);border-radius:5px;outline:none;}
         .volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:50%;cursor:none;box-shadow:0 0 15px var(--accent);border:2px solid #060810;}
-        .volume-label{font-size:.62rem;text-transform:uppercase;letter-spacing:4px;color:var(--accent);font-weight:800;opacity:.7;}
         .overlay-page{position:fixed;inset:0;z-index:10000;background:#060810;display:none;opacity:0;overflow-y:auto;transition:opacity .8s ease;}
         .overlay-page.open{opacity:1;}
         .close-btn{position:fixed;top:28px;right:32px;z-index:10001;background:transparent;color:#fff;border:1px solid var(--border);padding:8px 20px;border-radius:50px;font-weight:800;cursor:pointer !important;font-size:.75rem;letter-spacing:2px;transition:.3s;}
@@ -128,8 +134,9 @@
         .server-banner-img{width:100%;border-radius:12px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:cover;aspect-ratio:960/540;background:rgba(59,130,246,.04);display:block;opacity:0;transform:translateY(22px) scale(.97);}
         .server-banner-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1);}
         .server-banner-img:hover{transform:scale(1.01);box-shadow:0 0 24px rgba(59,130,246,.15);}
+        /* Logo grid - fits 1000x1000 logos */
         .logo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
-        .logo-img{width:100%;border-radius:14px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:contain;aspect-ratio:1/1;background:rgba(255,255,255,.02);display:block;padding:20px;opacity:0;transform:translateY(28px) scale(.97);}
+        .logo-img{width:100%;border-radius:14px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:contain;aspect-ratio:1/1;background:rgba(255,255,255,.02);display:block;padding:8px;opacity:0;transform:translateY(28px) scale(.97);}
         .logo-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);}
         .logo-img:hover{transform:scale(1.03);border-color:var(--accent);box-shadow:0 0 20px rgba(59,130,246,.15);}
         .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px;}
@@ -190,8 +197,14 @@
     <div class="top-bar"><a class="contact-btn" href="https://discord.com/users/1272978844248178730" target="_blank">Contact Me</a></div>
     <div class="discord-widget-container">
         <div class="discord-card" data-tilt>
+            <!-- SVG trace animation replaces profile photo -->
             <div class="discord-pfp-wrapper">
-                <img id="dc-pfp" src="images/Profile-Photo.png" class="discord-pfp" alt="pfp">
+                <div class="dc-svg-wrap">
+                    <svg class="dc-svg-anim" viewBox="0 0 560 90" width="72" height="36" xmlns="http://www.w3.org/2000/svg">
+                        <text x="50%" y="78" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="80" font-weight="800" letter-spacing="-3" class="dc-trace-fill">official.matt</text>
+                        <text x="50%" y="78" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="80" font-weight="800" letter-spacing="-3" class="dc-trace-outline">official.matt</text>
+                    </svg>
+                </div>
                 <div id="dc-dot" class="discord-status-dot"></div>
             </div>
             <div class="discord-info">
@@ -296,7 +309,7 @@
 const CONFIG = {
     name:'official.matt', tagline:'Designer & Developer',
     bio:'Designer, developer, and creator crafting polished digital experiences. From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.',
-    quote:'“Your future is created by what you do today, not tomorrow.”',
+    quote:'"Your future is created by what you do today, not tomorrow."',
     discord:{ userId:'1272978844248178730' },
     commissionsOpen:true,
     skillsRow1:['Photoshop','Illustrator','After Effects','Premiere Pro','Figma','Canva','Blender','VS Code'],
@@ -319,14 +332,14 @@ const CONFIG = {
         {logo:'images/tlogo3.png', name:'dubais studio',    desc:'discord.gg/dubaaai'},
     ],
     clientsSlots: 2,
-    portfolioSlots:{ banners:4, serverBanners:6, logos:1, photography:9 },
+    portfolioSlots:{ banners:4, serverBanners:6, logos:5, photography:9 },
 };
 
 // title ticker
 const _t=CONFIG.name+' ✦',_chars=Array.from(_t);let _ti=0,_ta=true;
 setInterval(()=>{_ta?_ti++:_ti--;if(_ti>=_chars.length)_ta=false;if(_ti<=1)_ta=true;document.title=_chars.slice(0,_ti).join('')||'m';},120);
 
-// stars - faster
+// stars
 let starSpeedBoost=1,starBoostTimer=null;
 (()=>{
     const c=document.getElementById('snow'),ctx=c.getContext('2d');let fl=[];
@@ -357,7 +370,6 @@ async function fetchLanyard(){
         const dat=(await(await fetch('https://api.lanyard.rest/v1/users/'+uid)).json());
         if(!dat.success)return;
         const d=dat.data;
-        if(d.discord_user.avatar)document.getElementById('dc-pfp').src='https://cdn.discordapp.com/avatars/'+uid+'/'+d.discord_user.avatar+'.webp?size=160';
         document.getElementById('dc-name').innerText=d.discord_user.global_name||d.discord_user.username;
         const dot=document.getElementById('dc-dot');
         const clr={online:'#50fa7b',idle:'#f1fa8c',dnd:'#ff5555',offline:'#6272a4'};
@@ -367,7 +379,7 @@ async function fetchLanyard(){
         if(d.listening_to_spotify){tag.innerText='Listening to Spotify';act.innerText=d.spotify.song+' — '+d.spotify.artist;}
         else if(d.activities?.length){
             const cu=d.activities.find(a=>a.type===4),ga=d.activities.find(a=>a.type===0);
-            if(cu){let em=cu.emoji?.id?'<img src="https://cdn.discordapp.com/emojis/'+cu.emoji.id+'.' +(cu.emoji.animated?'gif':'png')+'" style="width:1.1rem;height:1.1rem;margin-right:4px;">':cu.emoji?'<span style="margin-right:4px;">'+cu.emoji.name+'</span>':''  ;tag.innerText='Discord Presence';act.innerHTML=em+(cu.state||''  );}
+            if(cu){let em=cu.emoji?.id?'<img src="https://cdn.discordapp.com/emojis/'+cu.emoji.id+'.'+(cu.emoji.animated?'gif':'png')+'" style="width:1.1rem;height:1.1rem;margin-right:4px;">':cu.emoji?'<span style="margin-right:4px;">'+cu.emoji.name+'</span>':'';tag.innerText='Discord Presence';act.innerHTML=em+(cu.state||'');}
             else if(ga){tag.innerText='Currently Playing';act.innerText='Playing '+ga.name;}
         }else{tag.innerText='Live Status';act.innerText='Chilling…';}
     }catch(e){}
