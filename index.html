@@ -168,17 +168,14 @@
         .status-dot { width:8px; height:8px; background:#50fa7b; border-radius:50%; display:inline-block; margin-right:10px; box-shadow:0 0 10px #50fa7b; }
         .status-text { font-size:.75rem; font-weight:800; letter-spacing:1px; color:#50fa7b; text-transform:uppercase; }
 
-        /* TRUSTED — minimal, just images */
+        /* TRUSTED */
         .trusted-card {
             background: rgba(255,255,255,.015) !important;
             border-color: rgba(59,130,246,.08) !important;
             padding: 28px 36px;
         }
         .trusted-inner { display:flex; align-items:center; justify-content:center; gap:60px; flex-wrap:wrap; }
-        .trusted-logo-wrap {
-            display:flex; align-items:center; justify-content:center;
-            padding:0; border:none; background:none; transition:.4s;
-        }
+        .trusted-logo-wrap { display:flex; align-items:center; justify-content:center; padding:0; border:none; background:none; transition:.4s; }
         .trusted-logo-wrap:hover { transform:translateY(-3px) scale(1.05); }
         .trusted-logo-wrap img { width:140px; height:auto; max-height:70px; object-fit:contain; filter:brightness(.6) grayscale(.4); transition:.4s; }
         .trusted-logo-wrap:hover img { filter:brightness(1) grayscale(0); }
@@ -220,10 +217,8 @@
         }
         .close-btn:hover { background:var(--accent); border-color:var(--accent); }
 
-        
         #portfolio-overlay { padding:0 20px 60px; }
 
-        
         .port-hero {
             width:100%; max-width:1200px; margin:0 auto 60px;
             padding:60px 0 40px;
@@ -232,24 +227,14 @@
         }
         .port-hero-svg { overflow:visible; display:block; width:min(900px,90vw); }
 
-        
         .port-outline {
-            fill:none;
-            stroke:var(--accent);
-            stroke-width:1.4;
-            stroke-linecap:round;
-            stroke-linejoin:round;
-            stroke-dasharray:4000;
-            stroke-dashoffset:4000;
+            fill:none; stroke:var(--accent); stroke-width:1.4;
+            stroke-linecap:round; stroke-linejoin:round;
+            stroke-dasharray:4000; stroke-dashoffset:4000;
             filter:drop-shadow(0 0 12px rgba(59,130,246,.7));
             animation: port-trace 3s cubic-bezier(.4,0,.2,1) infinite;
         }
-        .port-fill {
-            fill:#fff;
-            stroke:none;
-            opacity:0;
-            animation: port-fill-loop 3s ease infinite;
-        }
+        .port-fill { fill:#fff; stroke:none; opacity:0; animation: port-fill-loop 3s ease infinite; }
         @keyframes port-trace {
             0%   { stroke-dashoffset:4000; opacity:1; }
             60%  { stroke-dashoffset:0;    opacity:1; }
@@ -264,12 +249,10 @@
             100% { opacity:0; }
         }
 
-        /* blue scan line that sweeps across during fill */
         .port-scan {
             position:absolute; top:0; left:-100%; width:60%; height:100%;
             background:linear-gradient(90deg,transparent,rgba(59,130,246,.06),transparent);
-            animation:port-scan-move 3s linear infinite;
-            pointer-events:none;
+            animation:port-scan-move 3s linear infinite; pointer-events:none;
         }
         @keyframes port-scan-move { 0%{left:-60%;} 100%{left:110%;} }
 
@@ -278,18 +261,50 @@
         .portfolio-section.visible { opacity:1; transform:translateY(0); }
         .section-title { font-size:1.3rem; color:var(--accent); margin-bottom:22px; border-left:3px solid var(--accent); padding-left:14px; text-transform:uppercase; letter-spacing:2px; font-weight:800; }
 
+        /* BANNER GRID — standard banners, wide crop */
         .banner-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(400px,1fr)); gap:14px; }
-        .banner-img { width:100%; border-radius:12px; border:1px solid var(--border); transition:.35s; cursor:pointer !important; object-fit:cover; aspect-ratio:10/3; background:rgba(59,130,246,.04); display:block; opacity:0; transform:translateY(22px) scale(.97); }
+        .banner-img {
+            width:100%; border-radius:12px; border:1px solid var(--border);
+            transition:.35s; cursor:pointer !important;
+            object-fit:cover; aspect-ratio:10/3;
+            background:rgba(59,130,246,.04); display:block;
+            opacity:0; transform:translateY(22px) scale(.97);
+        }
         .banner-img.float-in { opacity:1; transform:translateY(0) scale(1); transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1); }
         .banner-img:hover { transform:scale(1.01); box-shadow:0 0 24px rgba(59,130,246,.15); }
 
+        /* SERVER BANNER GRID — Discord server banner 960×540 = 16:9 */
+        .server-banner-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:14px; }
+        .server-banner-img {
+            width:100%; border-radius:12px; border:1px solid var(--border);
+            transition:.35s; cursor:pointer !important;
+            object-fit:cover; aspect-ratio:16/9;
+            background:rgba(59,130,246,.04); display:block;
+            opacity:0; transform:translateY(22px) scale(.97);
+        }
+        .server-banner-img.float-in { opacity:1; transform:translateY(0) scale(1); transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1); }
+        .server-banner-img:hover { transform:scale(1.01); box-shadow:0 0 24px rgba(59,130,246,.15); }
+
+        /* LOGO GRID */
         .logo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:16px; }
-        .logo-img { width:100%; border-radius:14px; border:1px solid var(--border); transition:.35s; cursor:pointer !important; object-fit:contain; aspect-ratio:1/1; background:rgba(255,255,255,.02); display:block; padding:20px; opacity:0; transform:translateY(28px) scale(.97); }
+        .logo-img {
+            width:100%; border-radius:14px; border:1px solid var(--border);
+            transition:.35s; cursor:pointer !important;
+            object-fit:contain; aspect-ratio:1/1;
+            background:rgba(255,255,255,.02); display:block; padding:20px;
+            opacity:0; transform:translateY(28px) scale(.97);
+        }
         .logo-img.float-in { opacity:1; transform:translateY(0) scale(1); transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1); }
         .logo-img:hover { transform:scale(1.03); border-color:var(--accent); box-shadow:0 0 20px rgba(59,130,246,.15); }
 
+        /* PHOTO GRID */
         .photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
-        .photo-img { width:100%; border-radius:14px; border:1px solid var(--border); transition:.35s; cursor:pointer !important; object-fit:cover; aspect-ratio:4/3; display:block; opacity:0; transform:translateY(28px) scale(.97); }
+        .photo-img {
+            width:100%; border-radius:14px; border:1px solid var(--border);
+            transition:.35s; cursor:pointer !important;
+            object-fit:cover; aspect-ratio:4/3; display:block;
+            opacity:0; transform:translateY(28px) scale(.97);
+        }
         .photo-img.float-in { opacity:1; transform:translateY(0) scale(1); transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1); }
         .photo-img:hover { transform:scale(1.015); box-shadow:0 0 30px rgba(59,130,246,.1); }
 
@@ -427,7 +442,6 @@
             <p class="bio" style="font-size:.85rem;" id="el-port-desc"></p>
         </div>
 
-        <!-- TRUSTED — click opens clients page -->
         <div class="card c-trusted trusted-card" data-tilt onclick="openClients()">
             <div class="trusted-inner">
                 <div class="trusted-logo-wrap">
@@ -531,19 +545,20 @@ const CONFIG = {
         {title:'Not You Too',artist:'Drake',cover:'images/notyou.webp',url:'https://dworkspace.vercel.app/assets/notyoutoo.mp3'},
         {title:'9',          artist:'Drake',cover:'images/nine.webp',  url:'https://dworkspace.vercel.app/assets/ninedrake.mp3'},
     ],
-    // Add real client data here
     clients:[
-        {logo:'images/tlogo1.png',name:'ILE Customs',  desc:'discord.gg/ilecustoms'},
+        {logo:'images/tlogo1.png',name:'ILE Customs',      desc:'discord.gg/ilecustoms'},
         {logo:'images/tlogo2.png',name:'Big Sky Roleplay',  desc:'discord.gg/bigsky'},
-        {logo:'images/tlogo3.png',name:'None',desc:'None'},
+        {logo:'images/tlogo3.png',name:'None',              desc:'None'},
     ],
+    // Max slots to probe per category — raise if you add more images
+    portfolioMaxSlots: 50,
 };
 
-// title
+// ── TITLE TICKER ──
 const _t=CONFIG.name+' ✦',_chars=Array.from(_t);let _ti=0,_ta=true;
 setInterval(()=>{_ta?_ti++:_ti--;if(_ti>=_chars.length)_ta=false;if(_ti<=1)_ta=true;document.title=_chars.slice(0,_ti).join('')||'m';},120);
 
-// stars
+// ── STARS ──
 let starSpeedBoost=1,starBoostTimer=null;
 (()=>{
     const c=document.getElementById('snow'),ctx=c.getContext('2d');let fl=[];
@@ -552,13 +567,13 @@ let starSpeedBoost=1,starBoostTimer=null;
     window.addEventListener('resize',init);init();draw();
 })();
 
-// cursor
+// ── CURSOR ──
 const cr=document.getElementById('cursor');
 document.addEventListener('mousemove',e=>{cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px';});
 document.addEventListener('mousedown',()=>cr.style.transform='translate(-50%,-50%) scale(.7)');
 document.addEventListener('mouseup',()=>cr.style.transform='translate(-50%,-50%) scale(1)');
 
-// enter
+// ── ENTER ──
 function startApp(){
     const es=document.getElementById('enter-screen');
     es.style.opacity='0';
@@ -567,7 +582,7 @@ function startApp(){
     setTimeout(()=>{if(!mPlaying&&CONFIG.playlist[mCI]?.url)autoPlay();},900);
 }
 
-// lanyard
+// ── LANYARD ──
 async function fetchLanyard(){
     try{
         const uid=CONFIG.discord.userId;
@@ -591,7 +606,7 @@ async function fetchLanyard(){
 }
 fetchLanyard();setInterval(fetchLanyard,15000);
 
-// populate
+// ── POPULATE ──
 document.getElementById('el-name').innerText=CONFIG.name;
 document.getElementById('el-tagline').innerText=CONFIG.tagline;
 document.getElementById('el-bio').innerText=CONFIG.bio;
@@ -631,7 +646,7 @@ function randomLitPill(){
 }
 setInterval(randomLitPill,350);
 
-// music
+// ── MUSIC ──
 const aud=document.getElementById('m-audio');let mPlaying=false,mCI=0;
 const fmt=t=>{if(isNaN(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return`${m}:${s<10?'0':''}${s}`;};
 function loadSong(i){const s=CONFIG.playlist[i]||CONFIG.playlist[0];document.getElementById('m-title').innerText=s.title;document.getElementById('m-artist').innerText=s.artist;document.getElementById('m-art').src=s.cover||'';aud.src=s.url;aud.volume=.65;document.getElementById('m-fill').style.width='0%';document.getElementById('m-time').innerText='0:00';}
@@ -643,7 +658,7 @@ document.getElementById('m-bar').addEventListener('click',e=>{if(!aud.duration)r
 document.getElementById('vol-slider').addEventListener('input',e=>aud.volume=+e.target.value);
 loadSong(0);
 
-// steal
+// ── STEAL ──
 let stealTimer=null;
 function showStealNotif(){const n=document.getElementById('steal-notif');n.classList.add('show');clearTimeout(stealTimer);stealTimer=setTimeout(()=>n.classList.remove('show'),3000);}
 let portRCCount=0,portRCTimer=null;
@@ -658,42 +673,124 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){closeLightbox();closePortfolio();closeClients();}
 });
 
-// portfolio
-function buildSection(id,title,imgs,gridClass,imgClass){
-    const sec=document.createElement('div');sec.className='portfolio-section';sec.id=id;
-    const grid='<div class="'+gridClass+'">'+imgs.map(src=>`<img src="${src}" class="${imgClass}" onclick="openLightbox(this.src)" alt="" loading="lazy">`).join('')+'</div>';
-    sec.innerHTML=`<h3 class="section-title">${title}</h3>${grid}`;
+// ── PORTFOLIO ──
+// Builds a section by probing image URLs — only images that actually load are shown.
+// No empty slots ever appear.
+function buildSection(id, title, srcs, gridClass, imgClass) {
+    const sec = document.createElement('div');
+    sec.className = 'portfolio-section';
+    sec.id = id;
+
+    const h3 = document.createElement('h3');
+    h3.className = 'section-title';
+    h3.innerText = title;
+    sec.appendChild(h3);
+
+    const grid = document.createElement('div');
+    grid.className = gridClass;
+    sec.appendChild(grid);
+
+    srcs.forEach(src => {
+        const img = document.createElement('img');
+        img.className = imgClass;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.onclick = () => openLightbox(img.src);
+
+        // Hide the element entirely if it fails — removes it from the grid flow
+        img.onerror = () => {
+            img.style.display = 'none';
+            img.style.padding = '0';
+            img.style.margin = '0';
+            img.style.border = 'none';
+            img.style.aspectRatio = 'unset';
+            img.style.height = '0';
+            img.style.width = '0';
+            img.style.minWidth = '0';
+            img.style.overflow = 'hidden';
+            img.style.opacity = '0';
+            img.style.position = 'absolute';
+            img.style.pointerEvents = 'none';
+        };
+
+        img.src = src; // set src AFTER binding onerror
+        grid.appendChild(img);
+    });
+
     return sec;
 }
-function openPortfolio(){
-    const ov=document.getElementById('portfolio-overlay'),co=document.getElementById('port-container');
-    co.innerHTML='';
-    const sections=[
-        {id:'banners',        title:'Banners',        imgs:Array.from({length:10},(_,i)=>`banners/banner${i+1}.png`),       grid:'banner-grid',cls:'banner-img'},
-        {id:'generic-banners',title:'Generic Banners',imgs:Array.from({length:10},(_,i)=>`serverbanner/banner${i+1}.png`),  grid:'banner-grid',cls:'banner-img'},
-        {id:'logos',          title:'Logos',          imgs:Array.from({length:12},(_,i)=>`logos/logo${i+1}.png`),           grid:'logo-grid',  cls:'logo-img'},
-        {id:'photography',    title:'Photography',    imgs:Array.from({length:12},(_,i)=>`photo/photo${i+1}.jpg`),          grid:'photo-grid', cls:'photo-img'},
+
+function openPortfolio() {
+    const ov = document.getElementById('portfolio-overlay');
+    const co = document.getElementById('port-container');
+    co.innerHTML = '';
+
+    const max = CONFIG.portfolioMaxSlots;
+
+    const sections = [
+        {
+            id:    'banners',
+            title: 'Banners',
+            srcs:  Array.from({length: max}, (_, i) => `banners/banner${i + 1}.png`),
+            grid:  'banner-grid',
+            cls:   'banner-img',
+        },
+        {
+            id:    'generic-banners',
+            title: 'Server Banners',
+            srcs:  Array.from({length: max}, (_, i) => `serverbanner/banner${i + 1}.png`),
+            grid:  'server-banner-grid',
+            cls:   'server-banner-img',
+        },
+        {
+            id:    'logos',
+            title: 'Logos',
+            srcs:  Array.from({length: max}, (_, i) => `logos/logo${i + 1}.png`),
+            grid:  'logo-grid',
+            cls:   'logo-img',
+        },
+        {
+            id:    'photography',
+            title: 'Photography',
+            srcs:  Array.from({length: max}, (_, i) => `photo/photo${i + 1}.jpg`),
+            grid:  'photo-grid',
+            cls:   'photo-img',
+        },
     ];
-    sections.forEach(s=>co.appendChild(buildSection(s.id,s.title,s.imgs,s.grid,s.cls)));
-    ov.style.display='block';
-    setTimeout(()=>{
+
+    sections.forEach(s => co.appendChild(buildSection(s.id, s.title, s.srcs, s.grid, s.cls)));
+
+    ov.style.display = 'block';
+    setTimeout(() => {
         ov.classList.add('open');
-        document.querySelectorAll('.portfolio-section').forEach((sec,i)=>{
-            setTimeout(()=>{
+        document.querySelectorAll('.portfolio-section').forEach((sec, i) => {
+            setTimeout(() => {
                 sec.classList.add('visible');
-                sec.querySelectorAll('.banner-img,.logo-img,.photo-img').forEach((el,ei)=>{
-                    setTimeout(()=>el.classList.add('float-in'),ei*70);
+                // Animate only visible (loaded) images
+                sec.querySelectorAll('img:not([style*="display: none"])').forEach((el, ei) => {
+                    setTimeout(() => el.classList.add('float-in'), ei * 70);
                 });
-            },i*160);
+                // Also catch images that load slightly after section reveal
+                setTimeout(() => {
+                    sec.querySelectorAll('img').forEach(el => {
+                        if (el.complete && el.naturalWidth > 0) {
+                            el.classList.add('float-in');
+                        }
+                    });
+                }, 600);
+            }, i * 160);
         });
-    },30);
-}
-function closePortfolio(){
-    const ov=document.getElementById('portfolio-overlay');portRCCount=0;clearTimeout(portRCTimer);
-    ov.classList.remove('open');setTimeout(()=>{ov.style.display='none';},800);
+    }, 30);
 }
 
-// clients
+function closePortfolio() {
+    const ov = document.getElementById('portfolio-overlay');
+    portRCCount = 0; clearTimeout(portRCTimer);
+    ov.classList.remove('open');
+    setTimeout(() => { ov.style.display = 'none'; }, 800);
+}
+
+// ── CLIENTS ──
 function openClients(){
     const ov=document.getElementById('clients-overlay'),grid=document.getElementById('clients-grid');
     grid.innerHTML='';
@@ -711,16 +808,22 @@ function closeClients(){
     ov.classList.remove('open');setTimeout(()=>{ov.style.display='none';},800);
 }
 
-function openLightbox(src){const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');img.src=src;lb.style.display='flex';setTimeout(()=>{lb.style.opacity='1';img.style.transform='scale(1)';},50);}
-function closeLightbox(){const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');lb.style.opacity='0';img.style.transform='scale(.85)';setTimeout(()=>lb.style.display='none',400);}
+// ── LIGHTBOX ──
+function openLightbox(src){
+    const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');
+    img.src=src;lb.style.display='flex';
+    setTimeout(()=>{lb.style.opacity='1';img.style.transform='scale(1)';},50);
+}
+function closeLightbox(){
+    const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');
+    lb.style.opacity='0';img.style.transform='scale(.85)';
+    setTimeout(()=>lb.style.display='none',400);
+}
 
 VanillaTilt.init(document.querySelectorAll('[data-tilt]'),{max:4,speed:400,glare:false});
 </script>
 </body>
 </html>
-
-
-
 
 
 
