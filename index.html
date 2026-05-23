@@ -273,12 +273,12 @@
         .banner-img.float-in { opacity:1; transform:translateY(0) scale(1); transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1); }
         .banner-img:hover { transform:scale(1.01); box-shadow:0 0 24px rgba(59,130,246,.15); }
 
-        /* SERVER BANNER GRID — Discord server banner 960×540 = 16:9 */
+        /* SERVER BANNER GRID — Discord server banner 960x540 = 16:9 */
         .server-banner-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:14px; }
         .server-banner-img {
             width:100%; border-radius:12px; border:1px solid var(--border);
             transition:.35s; cursor:pointer !important;
-            object-fit:cover; aspect-ratio:16/9;
+            object-fit:cover; aspect-ratio:960/540;
             background:rgba(59,130,246,.04); display:block;
             opacity:0; transform:translateY(22px) scale(.97);
         }
@@ -697,21 +697,8 @@ function buildSection(id, title, srcs, gridClass, imgClass) {
         img.loading = 'lazy';
         img.onclick = () => openLightbox(img.src);
 
-        // Hide the element entirely if it fails — removes it from the grid flow
-        img.onerror = () => {
-            img.style.display = 'none';
-            img.style.padding = '0';
-            img.style.margin = '0';
-            img.style.border = 'none';
-            img.style.aspectRatio = 'unset';
-            img.style.height = '0';
-            img.style.width = '0';
-            img.style.minWidth = '0';
-            img.style.overflow = 'hidden';
-            img.style.opacity = '0';
-            img.style.position = 'absolute';
-            img.style.pointerEvents = 'none';
-        };
+        // Remove from DOM entirely on failure — zero grid gap
+        img.onerror = () => img.remove();
 
         img.src = src; // set src AFTER binding onerror
         grid.appendChild(img);
@@ -824,6 +811,4 @@ VanillaTilt.init(document.querySelectorAll('[data-tilt]'),{max:4,speed:400,glare
 </script>
 </body>
 </html>
-
-
 
