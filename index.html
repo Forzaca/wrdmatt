@@ -336,7 +336,7 @@ const CONFIG = {
 };
 
 
-const _t=CONFIG.name+' ✦',_chars=Array.from(_t);let _ti=0,_ta=true;
+const _t=CONFIG.name+' ⛵',_chars=Array.from(_t);let _ti=0,_ta=true;
 setInterval(()=>{_ta?_ti++:_ti--;if(_ti>=_chars.length)_ta=false;if(_ti<=1)_ta=true;document.title=_chars.slice(0,_ti).join('')||'m';},120);
 
 
