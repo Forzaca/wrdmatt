@@ -309,9 +309,9 @@
         .photo-img:hover { transform:scale(1.015); box-shadow:0 0 30px rgba(59,130,246,.1); }
 
         /* ── CLIENTS OVERLAY ── */
-        #clients-overlay { padding:80px 20px 60px; }
-        .clients-content { max-width:1000px; margin:0 auto; }
-        .clients-hero { text-align:center; margin-bottom:60px; }
+        #clients-overlay { padding:80px 20px 80px; }
+        .clients-content { max-width:1100px; margin:0 auto; }
+        .clients-hero { text-align:center; margin-bottom:70px; }
         .clients-hero h1 {
             font-size:clamp(2.5rem,5vw,4rem); font-weight:800; letter-spacing:-2px;
             background:linear-gradient(135deg,#fff 30%,var(--accent-light));
@@ -319,20 +319,57 @@
             margin-bottom:12px;
         }
         .clients-hero p { font-size:.95rem; color:#6b7280; letter-spacing:.5px; }
-        .clients-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px; }
-        .client-card {
-            position:relative; overflow:hidden;
-            background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:20px;
-            padding:32px 24px; display:flex; flex-direction:column; align-items:center;
-            gap:16px; text-align:center; transition:.4s cubic-bezier(.22,1,.36,1);
-            opacity:0; transform:translateY(30px);
+
+        /* featured partners row */
+        /* featured partners row */
+        .partners-row {
+            display:flex; align-items:stretch; justify-content:center;
+            gap:20px; flex-wrap:wrap; margin-bottom:60px;
         }
-        .client-card.float-in { opacity:1; transform:translateY(0); transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1); }
-        .client-card:hover { border-color:var(--accent); background:rgba(59,130,246,.06); transform:translateY(-4px); box-shadow:0 16px 36px rgba(59,130,246,.1); }
-        .client-logo { width:100px; height:60px; object-fit:contain; filter:brightness(.7) grayscale(.3); transition:.3s; }
-        .client-card:hover .client-logo { filter:brightness(1) grayscale(0); }
-        .client-name { font-size:.9rem; font-weight:800; color:#e2e8f0; letter-spacing:.3px; }
-        .client-desc { font-size:.78rem; color:#6b7280; line-height:1.5; }
+        .partner-card {
+            flex:1; min-width:220px; max-width:300px;
+            background:rgba(59,130,246,.05); border:1px solid rgba(59,130,246,.2); border-radius:22px;
+            padding:36px 24px; display:flex; flex-direction:column; align-items:center; gap:16px;
+            text-align:center; transition:.4s cubic-bezier(.22,1,.36,1);
+            opacity:0; transform:translateY(24px);
+        }
+        .partner-card.float-in { opacity:1; transform:translateY(0); transition:opacity .65s ease,transform .65s cubic-bezier(.22,1,.36,1); }
+        .partner-card:hover { border-color:var(--accent); background:rgba(59,130,246,.1); transform:translateY(-6px); box-shadow:0 20px 40px rgba(59,130,246,.15); }
+        .partner-card img { width:110px; height:66px; object-fit:contain; filter:brightness(.7) grayscale(.2); transition:.35s; }
+        .partner-card:hover img { filter:brightness(1) grayscale(0); }
+        .partner-name { font-size:.95rem; font-weight:800; color:#e2e8f0; letter-spacing:.3px; }
+        .partner-desc { font-size:.72rem; color:#4b5563; }
+
+        /* divider between sections */
+        .clients-divider {
+            width:100%; height:1px; background:linear-gradient(90deg,transparent,rgba(59,130,246,.2),transparent);
+            margin-bottom:48px;
+        }
+
+        /* section label */
+        .clients-section-label {
+            font-size:.62rem; font-weight:800; letter-spacing:4px; color:var(--accent);
+            text-transform:uppercase; margin-bottom:24px; padding-left:4px;
+        }
+
+        /* logo wall */
+        .clients-logo-wall {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+            gap:14px;
+        }
+        .client-logo-card {
+            background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:16px;
+            padding:24px 16px; display:flex; flex-direction:column; align-items:center; gap:12px;
+            text-align:center; transition:.4s cubic-bezier(.22,1,.36,1);
+            opacity:0; transform:translateY(20px);
+        }
+        .client-logo-card.float-in { opacity:1; transform:translateY(0); transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1); }
+        .client-logo-card:hover { border-color:var(--accent); background:rgba(59,130,246,.07); transform:translateY(-4px); box-shadow:0 12px 28px rgba(59,130,246,.1); }
+        .client-logo-card img { width:100px; height:100px; object-fit:contain; filter:brightness(.6) grayscale(.3); transition:.35s; }
+        .client-logo-card:hover img { filter:brightness(1) grayscale(0); }
+        .client-logo-name { font-size:.78rem; font-weight:800; color:#cbd5e1; letter-spacing:.3px; }
+        .client-logo-desc { font-size:.68rem; color:#4b5563; line-height:1.4; }
 
         /* LIGHTBOX */
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.93); z-index:30000; display:none; justify-content:center; align-items:center; opacity:0; transition:opacity .4s ease; backdrop-filter:blur(12px); }
@@ -506,7 +543,10 @@
             <h1>Trusted by the Best</h1>
             <p>Communities &amp; organisations that have worked with official.matt</p>
         </div>
-        <div class="clients-grid" id="clients-grid"></div>
+        <div class="partners-row" id="partners-grid"></div>
+        <div class="clients-divider"></div>
+        <div class="clients-section-label">All Clients</div>
+        <div class="clients-logo-wall" id="clients-grid"></div>
     </div>
 </div>
 
@@ -545,13 +585,20 @@ const CONFIG = {
         {title:'Not You Too',artist:'Drake',cover:'images/notyou.webp',url:'https://dworkspace.vercel.app/assets/notyoutoo.mp3'},
         {title:'9',          artist:'Drake',cover:'images/nine.webp',  url:'https://dworkspace.vercel.app/assets/ninedrake.mp3'},
     ],
-    clients:[
-        {logo:'images/tlogo1.png',name:'ILE Customs',      desc:'discord.gg/ilecustoms'},
-        {logo:'images/tlogo2.png',name:'Big Sky Roleplay',  desc:'discord.gg/bigsky'},
-        {logo:'images/tlogo3.png',name:'None',              desc:'None'},
+    partners:[
+        {logo:'images/tlogo1.png', name:'ILE Customs',      desc:'discord.gg/ilecustoms'},
+        {logo:'images/tlogo2.png', name:'Big Sky Roleplay',  desc:'discord.gg/bigsky'},
+        {logo:'images/tlogo3.png', name:'Partner Three',     desc:'discord.gg/partner'},
     ],
-    // Max slots to probe per category — raise if you add more images
-    portfolioMaxSlots: 50,
+    // Just drop logos into clients/logo1.png, logo2.png, etc. and raise this number
+    clientsSlots: 5,
+    // Set exactly how many images exist in each portfolio folder
+    portfolioSlots: {
+        banners:        10,
+        serverBanners:  10,
+        logos:          12,
+        photography:    12,
+    },
 };
 
 // ── TITLE TICKER ──
@@ -697,10 +744,7 @@ function buildSection(id, title, srcs, gridClass, imgClass) {
         img.loading = 'lazy';
         img.onclick = () => openLightbox(img.src);
 
-        // Remove from DOM entirely on failure — zero grid gap
-        img.onerror = () => img.remove();
-
-        img.src = src; // set src AFTER binding onerror
+        img.src = src;
         grid.appendChild(img);
     });
 
@@ -712,34 +756,34 @@ function openPortfolio() {
     const co = document.getElementById('port-container');
     co.innerHTML = '';
 
-    const max = CONFIG.portfolioMaxSlots;
+    const sl = CONFIG.portfolioSlots;
 
     const sections = [
         {
             id:    'banners',
             title: 'Banners',
-            srcs:  Array.from({length: max}, (_, i) => `banners/banner${i + 1}.png`),
+            srcs:  Array.from({length: sl.banners},       (_, i) => `banners/banner${i + 1}.png`),
             grid:  'banner-grid',
             cls:   'banner-img',
         },
         {
             id:    'generic-banners',
             title: 'Server Banners',
-            srcs:  Array.from({length: max}, (_, i) => `serverbanner/banner${i + 1}.png`),
+            srcs:  Array.from({length: sl.serverBanners}, (_, i) => `serverbanner/banner${i + 1}.png`),
             grid:  'server-banner-grid',
             cls:   'server-banner-img',
         },
         {
             id:    'logos',
             title: 'Logos',
-            srcs:  Array.from({length: max}, (_, i) => `logos/logo${i + 1}.png`),
+            srcs:  Array.from({length: sl.logos},         (_, i) => `logos/logo${i + 1}.png`),
             grid:  'logo-grid',
             cls:   'logo-img',
         },
         {
             id:    'photography',
             title: 'Photography',
-            srcs:  Array.from({length: max}, (_, i) => `photo/photo${i + 1}.jpg`),
+            srcs:  Array.from({length: sl.photography},   (_, i) => `photo/photo${i + 1}.jpg`),
             grid:  'photo-grid',
             cls:   'photo-img',
         },
@@ -779,14 +823,31 @@ function closePortfolio() {
 
 // ── CLIENTS ──
 function openClients(){
-    const ov=document.getElementById('clients-overlay'),grid=document.getElementById('clients-grid');
-    grid.innerHTML='';
-    CONFIG.clients.forEach((c,i)=>{
-        const card=document.createElement('div');card.className='client-card';
-        card.innerHTML=`<img src="${c.logo}" class="client-logo" alt="${c.name}" onerror="this.style.display='none'"><div class="client-name">${c.name}</div><div class="client-desc">${c.desc}</div>`;
-        grid.appendChild(card);
-        setTimeout(()=>card.classList.add('float-in'),100+i*120);
+    const ov=document.getElementById('clients-overlay');
+    const pgrid=document.getElementById('partners-grid');
+    const cgrid=document.getElementById('clients-grid');
+    pgrid.innerHTML=''; cgrid.innerHTML='';
+
+    // Featured partners
+    CONFIG.partners.forEach((p,i)=>{
+        const card=document.createElement('div');card.className='partner-card';
+        card.innerHTML=`
+            <img src="${p.logo}" alt="${p.name}" onerror="this.style.opacity='.15'">
+            <div class="partner-name">${p.name}</div>
+            <div class="partner-desc">${p.desc}</div>
+        `;
+        pgrid.appendChild(card);
+        setTimeout(()=>card.classList.add('float-in'),80+i*100);
     });
+
+    // All clients — creates exactly clientsSlots cards
+    for(let i=0;i<CONFIG.clientsSlots;i++){
+        const card=document.createElement('div');card.className='client-logo-card';
+        card.innerHTML=`<img src="clients/logo${i+1}.png" alt="Client ${i+1}" onerror="this.style.opacity='.1'">`;
+        cgrid.appendChild(card);
+        setTimeout(()=>card.classList.add('float-in'),300+i*80);
+    }
+
     ov.style.display='block';
     setTimeout(()=>ov.classList.add('open'),30);
 }
