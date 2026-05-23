@@ -45,9 +45,9 @@
         .discord-card::before{content:'';position:absolute;inset:-30%;background:radial-gradient(circle at 50% 50%,rgba(96,165,250,.22),rgba(96,165,250,.08) 28%,transparent 60%);opacity:0;transform:scale(.9);transition:opacity .45s,transform .45s;pointer-events:none;}
         .discord-card:hover{border-color:var(--accent);background:rgba(59,130,246,.08);transform:translateY(-4px);box-shadow:0 15px 35px rgba(59,130,246,.15);}
         .discord-card:hover::before{opacity:1;transform:scale(1);}
-        /* Discord pfp wrapper now hosts the SVG animation */
+        
         .discord-pfp-wrapper{position:relative;width:80px;height:80px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-        /* SVG animation in discord card */
+        
         .dc-svg-wrap{width:80px;height:80px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--border);background:rgba(59,130,246,.06);overflow:hidden;position:relative;}
         .dc-svg-anim{overflow:visible;display:block;}
         .dc-trace-outline{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(59,130,246,.8));stroke-dasharray:2000;stroke-dashoffset:2000;animation:dc-trace-loop 3.6s cubic-bezier(.4,0,.2,1) infinite;}
@@ -134,7 +134,7 @@
         .server-banner-img{width:100%;border-radius:12px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:cover;aspect-ratio:960/540;background:rgba(59,130,246,.04);display:block;opacity:0;transform:translateY(22px) scale(.97);}
         .server-banner-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1);}
         .server-banner-img:hover{transform:scale(1.01);box-shadow:0 0 24px rgba(59,130,246,.15);}
-        /* Logo grid - fits 1000x1000 logos */
+        
         .logo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
         .logo-img{width:100%;border-radius:14px;border:1px solid var(--border);transition:.35s;cursor:pointer !important;object-fit:contain;aspect-ratio:1/1;background:rgba(255,255,255,.02);display:block;padding:8px;opacity:0;transform:translateY(28px) scale(.97);}
         .logo-img.float-in{opacity:1;transform:translateY(0) scale(1);transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);}
@@ -197,7 +197,7 @@
     <div class="top-bar"><a class="contact-btn" href="https://discord.com/users/1272978844248178730" target="_blank">Contact Me</a></div>
     <div class="discord-widget-container">
         <div class="discord-card" data-tilt>
-            <!-- SVG trace animation replaces profile photo -->
+            
             <div class="discord-pfp-wrapper">
                 <div class="dc-svg-wrap">
                     <svg class="dc-svg-anim" viewBox="0 0 560 90" width="72" height="36" xmlns="http://www.w3.org/2000/svg">
@@ -335,11 +335,11 @@ const CONFIG = {
     portfolioSlots:{ banners:4, serverBanners:6, logos:5, photography:9 },
 };
 
-// title ticker
+
 const _t=CONFIG.name+' ✦',_chars=Array.from(_t);let _ti=0,_ta=true;
 setInterval(()=>{_ta?_ti++:_ti--;if(_ti>=_chars.length)_ta=false;if(_ti<=1)_ta=true;document.title=_chars.slice(0,_ti).join('')||'m';},120);
 
-// stars
+
 let starSpeedBoost=1,starBoostTimer=null;
 (()=>{
     const c=document.getElementById('snow'),ctx=c.getContext('2d');let fl=[];
@@ -348,13 +348,13 @@ let starSpeedBoost=1,starBoostTimer=null;
     window.addEventListener('resize',init);init();draw();
 })();
 
-// cursor
+
 const cr=document.getElementById('cursor');
 document.addEventListener('mousemove',e=>{cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px';});
 document.addEventListener('mousedown',()=>cr.style.transform='translate(-50%,-50%) scale(.7)');
 document.addEventListener('mouseup',()=>cr.style.transform='translate(-50%,-50%) scale(1)');
 
-// enter
+
 function startApp(){
     const es=document.getElementById('enter-screen');
     es.style.opacity='0';
@@ -363,7 +363,7 @@ function startApp(){
     setTimeout(()=>{if(!mPlaying&&CONFIG.playlist[mCI]?.url)autoPlay();},900);
 }
 
-// lanyard
+
 async function fetchLanyard(){
     try{
         const uid=CONFIG.discord.userId;
@@ -386,7 +386,7 @@ async function fetchLanyard(){
 }
 fetchLanyard();setInterval(fetchLanyard,15000);
 
-// populate
+
 document.getElementById('el-name').innerText=CONFIG.name;
 document.getElementById('el-tagline').innerText=CONFIG.tagline;
 document.getElementById('el-bio').innerText=CONFIG.bio;
@@ -424,7 +424,7 @@ document.getElementById('m-bar').addEventListener('click',e=>{if(!aud.duration)r
 document.getElementById('vol-slider').addEventListener('input',e=>aud.volume=+e.target.value);
 loadSong(0);
 
-// steal
+
 let stealTimer=null;
 function showStealNotif(){const n=document.getElementById('steal-notif');n.classList.add('show');clearTimeout(stealTimer);stealTimer=setTimeout(()=>n.classList.remove('show'),3000);}
 let portRCCount=0,portRCTimer=null;
@@ -439,7 +439,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){closeLightbox();closePortfolio();closeClients();}
 });
 
-// portfolio
+
 function buildSection(id,title,srcs,gridClass,imgClass){
     const sec=document.createElement('div');sec.className='portfolio-section';sec.id=id;
     const h3=document.createElement('h3');h3.className='section-title';h3.innerText=title;sec.appendChild(h3);
@@ -462,7 +462,7 @@ function openPortfolio(){
 }
 function closePortfolio(){const ov=document.getElementById('portfolio-overlay');portRCCount=0;clearTimeout(portRCTimer);ov.classList.remove('open');setTimeout(()=>{ov.style.display='none';},800);}
 
-// clients
+
 function openClients(){
     const ov=document.getElementById('clients-overlay'),pgrid=document.getElementById('partners-grid'),cgrid=document.getElementById('clients-grid');
     pgrid.innerHTML='';cgrid.innerHTML='';
@@ -480,7 +480,7 @@ function openClients(){
 }
 function closeClients(){const ov=document.getElementById('clients-overlay');ov.classList.remove('open');setTimeout(()=>{ov.style.display='none';},800);}
 
-// lightbox
+
 function openLightbox(src){const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');img.src=src;lb.style.display='flex';setTimeout(()=>{lb.style.opacity='1';img.style.transform='scale(1)';},50);}
 function closeLightbox(){const lb=document.getElementById('lightbox'),img=document.getElementById('lb-img');lb.style.opacity='0';img.style.transform='scale(.85)';setTimeout(()=>lb.style.display='none',400);}
 
