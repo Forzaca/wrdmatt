@@ -91,9 +91,10 @@
         .m-bar{width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:6px;cursor:pointer;overflow:hidden;}
         .m-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#06b6d4);width:0%;transition:width .1s linear;border-radius:3px;}
         .m-controls{display:flex;align-items:center;gap:8px;margin-top:8px;}
-        .m-control{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;padding:0;background:rgba(59,130,246,.12);border:1px solid var(--border);border-radius:50%;color:#fff;font-size:.7rem;cursor:pointer !important;transition:.25s;}
-        .m-control:hover{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
-        .m-control-next{font-size:1rem;}
+        .m-skip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;background:linear-gradient(135deg,var(--accent),#06b6d4);border:1px solid rgba(147,197,253,.65);border-radius:9px;color:#fff;font-size:.59rem;font-weight:800;letter-spacing:1px;cursor:pointer !important;box-shadow:0 0 14px rgba(59,130,246,.24);transition:.25s;}
+        .m-skip span{font-size:1rem;line-height:0;transition:transform .25s;}
+        .m-skip:hover{border-color:#fff;box-shadow:0 0 22px rgba(59,130,246,.6);transform:translateY(-1px);}
+        .m-skip:hover span{transform:translateX(3px);}
         .mc-time{margin-left:auto;}
         .m-embed{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;}
         .mc-time{font-size:.6rem;color:#6f89b7;white-space:nowrap;letter-spacing:.08em;}
@@ -225,8 +226,7 @@
         </div>
     </div>
     <div class="m-controls">
-        <button class="m-control" id="m-toggle" type="button" aria-label="Play" title="Play">▶</button>
-        <button class="m-control m-control-next" id="m-next" type="button" aria-label="Next song" title="Next song">»</button>
+        <button class="m-skip" id="m-next" type="button" aria-label="Skip to next song" title="Skip to next song">SKIP <span>»</span></button>
         <span class="mc-time" id="m-time">0:00</span>
     </div>
     <audio id="m-audio" preload="none"></audio>
@@ -283,11 +283,11 @@ const _t=CONFIG.name+' ✦',_chars=Array.from(_t);let _ti=0,_ta=true;
 setInterval(()=>{_ta?_ti++:_ti--;if(_ti>=_chars.length)_ta=false;if(_ti<=1)_ta=true;document.title=_chars.slice(0,_ti).join('')||'m';},120);
 
 
-let starSpeedBoost=1,starBoostTimer=null;
+let starSpeedBoost=1,starBoostTimer=null,musicPulse=0,musicPlaying=false;
 (()=>{
     const c=document.getElementById('snow'),ctx=c.getContext('2d');let fl=[];
     function init(){c.width=innerWidth;c.height=innerHeight;fl=Array.from({length:120},()=>({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*1.8+.5,v:Math.random()*2+1.2,o:Math.random()*.4+.1}));}
-    function draw(){ctx.clearRect(0,0,c.width,c.height);fl.forEach(f=>{ctx.fillStyle='rgba(96,165,250,'+f.o+')';ctx.beginPath();ctx.arc(f.x,f.y,f.s,0,Math.PI*2);ctx.fill();f.y+=f.v*starSpeedBoost;if(f.y>c.height){f.y=-5;f.x=Math.random()*c.width;}});requestAnimationFrame(draw);}
+    function draw(){ctx.clearRect(0,0,c.width,c.height);musicPulse*=.94;fl.forEach(f=>{const response=musicPlaying?musicPulse:0,scale=f.s+response*f.s*.8;ctx.fillStyle='rgba(96,165,250,'+(f.o+response*.18)+')';ctx.beginPath();ctx.arc(f.x,f.y,scale,0,Math.PI*2);ctx.fill();f.y+=f.v*starSpeedBoost+response*1.8;if(f.y>c.height){f.y=-5;f.x=Math.random()*c.width;}});requestAnimationFrame(draw);}
     window.addEventListener('resize',init);init();draw();
 })();
 
@@ -359,14 +359,14 @@ setInterval(()=>{const pills=document.querySelectorAll('.tech-pill');if(!pills.l
 
 const aud=document.getElementById('m-audio'),scFrame=document.getElementById('m-embed');let mPlaying=false,mCI=0,scWidget=null,pendingPlay=false;
 const fmt=t=>{if(isNaN(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+(s<10?'0':'')+s;};
-function setPlayingUI(playing){mPlaying=playing;const b=document.getElementById('m-toggle');b.innerText=playing?'Ⅱ':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause':'Play';}
+function setPlayingUI(playing){mPlaying=playing;musicPlaying=playing;if(playing)musicPulse=Math.max(musicPulse,.35);}
 function loadSoundCloud(s){
     const src='https://w.soundcloud.com/player/?url='+encodeURIComponent('https://api.soundcloud.com/tracks/'+s.track)+'&color=%23000000&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true';
     scFrame.onload=()=>{
         scWidget=SC.Widget(scFrame);
         scWidget.bind(SC.Widget.Events.PLAY,()=>setPlayingUI(true));
         scWidget.bind(SC.Widget.Events.PAUSE,()=>setPlayingUI(false));
-        scWidget.bind(SC.Widget.Events.PLAY_PROGRESS,e=>{document.getElementById('m-fill').style.width=e.relativePosition*100+'%';document.getElementById('m-time').innerText=fmt(e.currentPosition/1000);});
+        scWidget.bind(SC.Widget.Events.PLAY_PROGRESS,e=>{musicPulse=Math.max(musicPulse,.35+Math.abs(Math.sin(e.currentPosition/120)));document.getElementById('m-fill').style.width=e.relativePosition*100+'%';document.getElementById('m-time').innerText=fmt(e.currentPosition/1000);});
         scWidget.bind(SC.Widget.Events.FINISH,()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();});
         scWidget.bind(SC.Widget.Events.READY,()=>{if(pendingPlay)scWidget.play();});
     };
@@ -380,10 +380,9 @@ function loadSong(i){
     else{if(scWidget)scWidget.pause();scWidget=null;aud.src=s.url;aud.volume=+document.getElementById('vol-slider').value;}
 }
 function autoPlay(){pendingPlay=true;const s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)scWidget.play();}else{aud.play().then(()=>setPlayingUI(true)).catch(()=>{});}}
-aud.ontimeupdate=()=>{if(aud.duration){document.getElementById('m-fill').style.width=(aud.currentTime/aud.duration*100)+'%';document.getElementById('m-time').innerText=fmt(aud.currentTime);}};
+aud.ontimeupdate=()=>{if(aud.duration){musicPulse=Math.max(musicPulse,.35+Math.abs(Math.sin(aud.currentTime*5)));document.getElementById('m-fill').style.width=(aud.currentTime/aud.duration*100)+'%';document.getElementById('m-time').innerText=fmt(aud.currentTime);}};
 aud.onended=()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();};
 aud.onpause=()=>setPlayingUI(false);aud.onplay=()=>setPlayingUI(true);
-document.getElementById('m-toggle').addEventListener('click',()=>{pendingPlay=true;const s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)mPlaying?scWidget.pause():scWidget.play();}else{mPlaying?aud.pause():aud.play().catch(()=>{});}});
 document.getElementById('m-next').addEventListener('click',()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();});
 document.getElementById('m-bar').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(),position=(e.clientX-r.left)/r.width,s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)scWidget.getDuration(d=>scWidget.seekTo(position*d));}else if(aud.duration)aud.currentTime=position*aud.duration;});
 document.getElementById('vol-slider').addEventListener('input',e=>aud.volume=+e.target.value);
