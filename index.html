@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script src="https://w.soundcloud.com/player/api.js"></script>
     <style>
         :root{--accent:#3b82f6;--accent-light:#60a5fa;--glass:rgba(59,130,246,0.03);--border:rgba(59,130,246,0.15);--blue-glow:rgba(59,130,246,0.1);--bg:#060810;}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;cursor:none !important;}
@@ -89,7 +90,12 @@
         .m-artist-lbl{font-size:.68rem;color:#666;margin-top:1px;}
         .m-bar{width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:6px;cursor:pointer;overflow:hidden;}
         .m-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#06b6d4);width:0%;transition:width .1s linear;border-radius:3px;}
-        .m-controls{display:flex;justify-content:flex-end;margin-top:8px;}
+        .m-controls{display:flex;align-items:center;gap:8px;margin-top:8px;}
+        .m-control{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;padding:0;background:rgba(59,130,246,.12);border:1px solid var(--border);border-radius:50%;color:#fff;font-size:.7rem;cursor:pointer !important;transition:.25s;}
+        .m-control:hover{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
+        .m-control-next{font-size:1rem;}
+        .mc-time{margin-left:auto;}
+        .m-embed{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;}
         .mc-time{font-size:.6rem;color:#6f89b7;white-space:nowrap;letter-spacing:.08em;}
         .volume-container{width:100%;max-width:1100px;margin-top:28px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;z-index:10;}
         .volume-slider{appearance:none;-webkit-appearance:none;width:250px;height:3px;background:rgba(59,130,246,.15);border-radius:5px;outline:none;}
@@ -218,8 +224,13 @@
             <div class="m-bar" id="m-bar"><div class="m-bar-fill" id="m-fill"></div></div>
         </div>
     </div>
-    <div class="m-controls"><span class="mc-time" id="m-time">0:00</span></div>
+    <div class="m-controls">
+        <button class="m-control" id="m-toggle" type="button" aria-label="Play" title="Play">▶</button>
+        <button class="m-control m-control-next" id="m-next" type="button" aria-label="Next song" title="Next song">»</button>
+        <span class="mc-time" id="m-time">0:00</span>
+    </div>
     <audio id="m-audio" preload="none"></audio>
+    <iframe id="m-embed" class="m-embed" title="SoundCloud player" allow="autoplay; encrypted-media"></iframe>
 </div>
 
 <div id="portfolio-overlay" class="overlay-page">
@@ -259,8 +270,10 @@ const CONFIG = {
     projectsDesc:'Projects Delivered — From custom branding and liveries to full Discord bots with advanced systems — consistently rated 5★ by clients.',
     portfolioDesc:'View all work across design, development, branding, and more.',
     playlist:[
-        {title:'Not You Too',artist:'Drake',cover:'images/notyou.webp',url:'https://dworkspace.vercel.app/assets/notyoutoo.mp3'},
-        {title:'9',artist:'Drake',cover:'images/nine.webp',url:'https://dworkspace.vercel.app/assets/ninedrake.mp3'},
+        {title:'SOMEBODY LOVES ME',artist:'Partynextdoor feat. drake',cover:'images/partynextdoor.webp',url:'assets/partynextdoor.mp3',type:'audio'},
+        {title:'Wind',artist:'Trippie Redd feat. The Kid LAROI',cover:'images/trippie.jpg',type:'soundcloud',track:'1588632243'},
+        {title:"Let's Pretend?",artist:'DC THE DON',cover:'images/DCDON.webp',type:'soundcloud',track:'1616568051'},
+        {title:'FLY ENOUGH TO BE VIRGIL',artist:'DC THE DON',cover:'images/DCDON2.png',type:'soundcloud',track:'1916305493'},
     ],
     portfolioSlots:{ banners:14, serverBanners:15, logos:9, photography:9 },
 };
@@ -290,7 +303,7 @@ function startApp(){
     es.style.opacity='0';
     setTimeout(()=>{es.style.display='none';document.getElementById('main-content').classList.add('visible');},1000);
     setTimeout(()=>{document.getElementById('music-widget').classList.add('vis');},1200);
-    setTimeout(()=>{if(!mPlaying&&CONFIG.playlist[mCI]?.url)autoPlay();},900);
+    setTimeout(()=>{if(!mPlaying)autoPlay();},900);
 }
 
 
@@ -344,14 +357,35 @@ buildMarqueeRow('marquee-row3',CONFIG.skillsRow3);
 setInterval(()=>{const pills=document.querySelectorAll('.tech-pill');if(!pills.length)return;const p=pills[Math.floor(Math.random()*pills.length)];p.classList.add('lit');setTimeout(()=>p.classList.remove('lit'),700);},350);
 
 
-const aud=document.getElementById('m-audio');let mPlaying=false,mCI=0;
+const aud=document.getElementById('m-audio'),scFrame=document.getElementById('m-embed');let mPlaying=false,mCI=0,scWidget=null,pendingPlay=false;
 const fmt=t=>{if(isNaN(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+(s<10?'0':'')+s;};
-function loadSong(i){const s=CONFIG.playlist[i]||CONFIG.playlist[0];document.getElementById('m-title').innerText=s.title;document.getElementById('m-artist').innerText=s.artist;document.getElementById('m-art').src=s.cover||'';aud.src=s.url;aud.volume=.65;document.getElementById('m-fill').style.width='0%';document.getElementById('m-time').innerText='0:00';}
-function autoPlay(){aud.play().then(()=>mPlaying=true).catch(()=>{});}
+function setPlayingUI(playing){mPlaying=playing;const b=document.getElementById('m-toggle');b.innerText=playing?'Ⅱ':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause':'Play';}
+function loadSoundCloud(s){
+    const src='https://w.soundcloud.com/player/?url='+encodeURIComponent('https://api.soundcloud.com/tracks/'+s.track)+'&color=%23000000&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true';
+    scFrame.onload=()=>{
+        scWidget=SC.Widget(scFrame);
+        scWidget.bind(SC.Widget.Events.PLAY,()=>setPlayingUI(true));
+        scWidget.bind(SC.Widget.Events.PAUSE,()=>setPlayingUI(false));
+        scWidget.bind(SC.Widget.Events.PLAY_PROGRESS,e=>{document.getElementById('m-fill').style.width=e.relativePosition*100+'%';document.getElementById('m-time').innerText=fmt(e.currentPosition/1000);});
+        scWidget.bind(SC.Widget.Events.FINISH,()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();});
+        scWidget.bind(SC.Widget.Events.READY,()=>{if(pendingPlay)scWidget.play();});
+    };
+    scFrame.src=src;
+}
+function loadSong(i){
+    const s=CONFIG.playlist[i]||CONFIG.playlist[0];
+    document.getElementById('m-title').innerText=s.title;document.getElementById('m-artist').innerText=s.artist;document.getElementById('m-art').src=s.cover||'';
+    document.getElementById('m-fill').style.width='0%';document.getElementById('m-time').innerText='0:00';setPlayingUI(false);
+    if(s.type==='soundcloud'){aud.pause();aud.removeAttribute('src');aud.load();loadSoundCloud(s);}
+    else{if(scWidget)scWidget.pause();scWidget=null;aud.src=s.url;aud.volume=+document.getElementById('vol-slider').value;}
+}
+function autoPlay(){pendingPlay=true;const s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)scWidget.play();}else{aud.play().then(()=>setPlayingUI(true)).catch(()=>{});}}
 aud.ontimeupdate=()=>{if(aud.duration){document.getElementById('m-fill').style.width=(aud.currentTime/aud.duration*100)+'%';document.getElementById('m-time').innerText=fmt(aud.currentTime);}};
 aud.onended=()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();};
-aud.onpause=()=>mPlaying=false;aud.onplay=()=>mPlaying=true;
-document.getElementById('m-bar').addEventListener('click',e=>{if(!aud.duration)return;const r=e.currentTarget.getBoundingClientRect();aud.currentTime=(e.clientX-r.left)/r.width*aud.duration;});
+aud.onpause=()=>setPlayingUI(false);aud.onplay=()=>setPlayingUI(true);
+document.getElementById('m-toggle').addEventListener('click',()=>{pendingPlay=true;const s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)mPlaying?scWidget.pause():scWidget.play();}else{mPlaying?aud.pause():aud.play().catch(()=>{});}});
+document.getElementById('m-next').addEventListener('click',()=>{mCI=(mCI+1)%CONFIG.playlist.length;loadSong(mCI);autoPlay();});
+document.getElementById('m-bar').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(),position=(e.clientX-r.left)/r.width,s=CONFIG.playlist[mCI];if(s.type==='soundcloud'){if(scWidget)scWidget.getDuration(d=>scWidget.seekTo(position*d));}else if(aud.duration)aud.currentTime=position*aud.duration;});
 document.getElementById('vol-slider').addEventListener('input',e=>aud.volume=+e.target.value);
 loadSong(0);
 
