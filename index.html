@@ -14,6 +14,8 @@
     <meta name="theme-color" content="#3b82f6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://w.soundcloud.com">
+    <link rel="preconnect" href="https://api.soundcloud.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -80,7 +82,8 @@
         @keyframes status-pulse{0%{box-shadow:0 0 0 0 rgba(80,250,123,.2);}70%{box-shadow:0 0 0 12px rgba(80,250,123,0);}100%{box-shadow:0 0 0 0 rgba(80,250,123,0);}}
         .status-dot{width:8px;height:8px;background:#50fa7b;border-radius:50%;display:inline-block;margin-right:10px;box-shadow:0 0 10px #50fa7b;}
         .status-text{font-size:.75rem;font-weight:800;letter-spacing:1px;color:#50fa7b;text-transform:uppercase;}
-        #music-widget{position:fixed;bottom:24px;right:24px;z-index:900;width:300px;background:rgba(6,8,16,.94);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:20px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.7),inset 0 0 20px var(--blue-glow);transition:opacity 1.5s ease;opacity:0;}
+        #music-widget{position:fixed;bottom:24px;right:24px;z-index:900;width:300px;background:rgba(6,8,16,.94);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:20px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.7),inset 0 0 20px var(--blue-glow);transition:opacity 1.5s ease,transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;}
+        #music-widget:hover{transform:translateY(-4px);border-color:rgba(96,165,250,.45);box-shadow:0 14px 36px rgba(0,0,0,.72),inset 0 0 24px rgba(59,130,246,.16);}
         #music-widget.vis{opacity:1;}
         .m-wrap{display:flex;align-items:center;gap:10px;}
         .m-art-img{width:42px;height:42px;border-radius:8px;border:1px solid var(--border);object-fit:cover;flex-shrink:0;background:rgba(59,130,246,.1);}
@@ -91,9 +94,9 @@
         .m-bar{width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:6px;cursor:pointer;overflow:hidden;}
         .m-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#06b6d4);width:0%;transition:width .1s linear;border-radius:3px;}
         .m-controls{display:flex;align-items:center;gap:8px;margin-top:8px;}
-        .m-skip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;background:linear-gradient(135deg,var(--accent),#06b6d4);border:1px solid rgba(147,197,253,.65);border-radius:9px;color:#fff;font-size:.59rem;font-weight:800;letter-spacing:1px;cursor:pointer !important;box-shadow:0 0 14px rgba(59,130,246,.24);transition:.25s;}
+        .m-skip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;background:rgba(59,130,246,.12);border:1px solid var(--border);border-radius:9px;color:#b9d4ff;font-size:.59rem;font-weight:700;letter-spacing:1px;cursor:pointer !important;box-shadow:none;transition:.25s;}
         .m-skip span{font-size:1rem;line-height:0;transition:transform .25s;}
-        .m-skip:hover{border-color:#fff;box-shadow:0 0 22px rgba(59,130,246,.6);transform:translateY(-1px);}
+        .m-skip:hover{background:rgba(59,130,246,.22);border-color:var(--accent-light);box-shadow:0 0 10px rgba(59,130,246,.2);}
         .m-skip:hover span{transform:translateX(3px);}
         .mc-time{margin-left:auto;}
         .m-embed{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;}
@@ -230,7 +233,7 @@
         <span class="mc-time" id="m-time">0:00</span>
     </div>
     <audio id="m-audio" preload="none"></audio>
-    <iframe id="m-embed" class="m-embed" title="SoundCloud player" allow="autoplay; encrypted-media"></iframe>
+    <iframe id="m-embed" class="m-embed" title="SoundCloud player" loading="eager" allow="autoplay; encrypted-media"></iframe>
 </div>
 
 <div id="portfolio-overlay" class="overlay-page">
@@ -361,7 +364,7 @@ const aud=document.getElementById('m-audio'),scFrame=document.getElementById('m-
 const fmt=t=>{if(isNaN(t))return'0:00';const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+(s<10?'0':'')+s;};
 function setPlayingUI(playing){mPlaying=playing;musicPlaying=playing;if(playing)musicPulse=Math.max(musicPulse,.35);}
 function loadSoundCloud(s){
-    const src='https://w.soundcloud.com/player/?url='+encodeURIComponent('https://api.soundcloud.com/tracks/'+s.track)+'&color=%23000000&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true';
+    const src='https://w.soundcloud.com/player/?url='+encodeURIComponent('https://api.soundcloud.com/tracks/'+s.track)+'&color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
     scFrame.onload=()=>{
         scWidget=SC.Widget(scFrame);
         scWidget.bind(SC.Widget.Events.PLAY,()=>setPlayingUI(true));
